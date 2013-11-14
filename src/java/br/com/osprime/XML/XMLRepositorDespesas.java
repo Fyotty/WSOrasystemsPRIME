@@ -6,7 +6,8 @@ package br.com.osprime.XML;
 
 import br.com.orasystems.Modelo.Empresas;
 import br.com.orasystems.Modelo.ListaErros;
-import br.com.osprime.Modelo.ClientesReposicao;
+import br.com.orasystems.Modelo.Repositores;
+import br.com.osprime.Modelo.RepositorDespesas;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,18 +19,20 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author fernando
  */
-@XmlRootElement(name = "CLIENTESREPOSICAO")
+@XmlRootElement(name = "DESPESASREPOSITOR")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XMLClientesReposicao {
-    
+public class XMLRepositorDespesas {
+
     private Empresas empresas;
-    @XmlElement(name = "lista")
-    private List<ClientesReposicao> listaClientesReposicaos;
+    private Repositores repositores;
+    @XmlElement(name = "listaDespesas")
+    private List<RepositorDespesas> listaRepositorDespesas;
     private ListaErros listaErros;
 
-    public XMLClientesReposicao() {
+    public XMLRepositorDespesas() {
         this.empresas = new Empresas();
-        this.listaClientesReposicaos = new ArrayList<>();
+        this.repositores = new Repositores();
+        this.listaRepositorDespesas = new ArrayList<>();
         this.listaErros = new ListaErros();
     }
 
@@ -41,12 +44,20 @@ public class XMLClientesReposicao {
         this.empresas = empresas;
     }
 
-    public List<ClientesReposicao> getListaClientesReposicaos() {
-        return listaClientesReposicaos;
+    public Repositores getRepositores() {
+        return repositores;
     }
 
-    public void setListaClientesReposicaos(List<ClientesReposicao> listaClientesReposicaos) {
-        this.listaClientesReposicaos = listaClientesReposicaos;
+    public void setRepositores(Repositores repositores) {
+        this.repositores = repositores;
+    }
+
+    public List<RepositorDespesas> getListaRepositorDespesas() {
+        return listaRepositorDespesas;
+    }
+
+    public void setListaRepositorDespesas(List<RepositorDespesas> listaRepositorDespesas) {
+        this.listaRepositorDespesas = listaRepositorDespesas;
     }
 
     public ListaErros getListaErros() {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<CLIENTESREPOSICAO>
+    <empresas>
+        <cnpj>71690382000170</cnpj>
+    </empresas>
+    <lista>
+        <codigo>11</codigo>
+        <razao_social>SUPERMERCADO SAKASHITA LTDA</razao_social>
+        <nome_fantasia>SAKASHITA I</nome_fantasia>
+        <cnpj>66429150000123</cnpj>
+        <iestad>12346</iestad>
+        <contato>JOAO</contato>
+        <telefone>33458769</telefone>
+        <endereco>AV LIBERO DE ALMEIDA SILVARES</endereco>
+        <bairro>CENTRO</bairro>
+        <cidade>FERNANDOPOLIS</cidade>
+        <cep>15600000</cep>
+        <estado>SP</estado>
+        <dt_ultima_compra>2013-09-09</dt_ultima_compra>
+        <rr>
+            <codigo>15</codigo>
+        </rr>
+        <listaRepositores>
+            <repositores>
+                <documento>32643150848</documento>
+            </repositores>
+            <operacao>I</operacao>
+        </listaRepositores>
+        <listaRepositores>
+            <repositores>
+                <documento>329005788876</documento>
+            </repositores>
+            <operacao>D</operacao>
+        </listaRepositores>
+    </lista>
+    <listaErros/>
+</CLIENTESREPOSICAO>

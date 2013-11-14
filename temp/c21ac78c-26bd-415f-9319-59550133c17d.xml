@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<CLIENTESREPOSICAO>
+    <empresas>
+        <nome_razao>CELIFLEX INDUSTRIA DE COLCHOES LTDA</nome_razao>
+        <cnpj>71690382000170</cnpj>
+        <pasta_vendedores>CELIFLEX</pasta_vendedores>
+        <listaErros/>
+    </empresas>
+    <lista>
+        <codigo>11</codigo>
+        <razao_social>SUPERMERCADO SAKASHITA LTDA</razao_social>
+        <nome_fantasia>SAKASHITA I</nome_fantasia>
+        <cnpj>66.429.150/0001-23</cnpj>
+        <iestad>12346</iestad>
+        <contato>JOAO</contato>
+        <telefone>33458769</telefone>
+        <endereco>AV LIBERO DE ALMEIDA SILVARES</endereco>
+        <bairro>CENTRO</bairro>
+        <cidade>FERNANDOPOLIS</cidade>
+        <cep>15600000</cep>
+        <estado>SP</estado>
+        <dt_ultima_compra/>
+        <rr>
+            <codigo>15</codigo>
+            <segunda>S</segunda>
+            <terca>S</terca>
+            <quarta>N</quarta>
+            <quinta>N</quinta>
+            <sexta>N</sexta>
+            <sabado>S</sabado>
+            <domingo>N</domingo>
+            <sequencia>3</sequencia>
+            <descricao>TESTANDO</descricao>
+        </rr>
+    </lista>
+    <listaErros/>
+</CLIENTESREPOSICAO>

@@ -5,14 +5,17 @@
 package br.com.osprime.RN;
 
 import br.com.orasystems.CTR.EmpresasCTR;
+import br.com.orasystems.CTR.ProtocoloProcessosCTR;
 import br.com.orasystems.Modelo.Empresas;
 import br.com.orasystems.Modelo.ListaErros;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
+import br.com.orasystems.XML.XMLProtocoloProcessos;
 import br.com.osprime.CTR.ClientesReposicaoCTR;
 import br.com.osprime.CTR.UltimaCompraReposicaoCTR;
 import br.com.osprime.Modelo.ClientesReposicao;
 import br.com.osprime.Modelo.UltimaCompraReposicao;
+import static br.com.osprime.RN.RotaReposicaoRN.xMLRotaReposicao;
 import br.com.osprime.XML.XMLUltimaCompraReposicao;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -30,7 +33,7 @@ public class UltimaCompraReposicaoRN {
 
     public static XMLUltimaCompraReposicao xMLUltimaCompraReposicao;
 
-    public String getUltimaCompraReposicao(String arqXML) {
+    public void getUltimaCompraReposicao(String arqXML) {
         xMLUltimaCompraReposicao = new XMLUltimaCompraReposicao();
 
         ProtocoloProcessos pp = new ProtocoloProcessos();
@@ -75,6 +78,9 @@ public class UltimaCompraReposicaoRN {
                                     ultimaCompraReposicaoCTR.gravaUltimaCompraReposicao(ucr);
                                 }
                             }
+                        } else {
+                            pp.setCodigo(1018);
+                            pp.setMensagem("Arquivo enviado contêm erros de validação.");
                         }
 
                     }
@@ -85,6 +91,9 @@ public class UltimaCompraReposicaoRN {
                         xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
                     }
 
+                } else {
+                    pp.setCodigo(1018);
+                    pp.setMensagem("Arquivo enviado contêm erros de validação.");
                 }
 
             } else {
@@ -102,19 +111,26 @@ public class UltimaCompraReposicaoRN {
 
         try {
             //Create JAXB context and instantiate marshaller
-            JAXBContext context = JAXBContext.newInstance(ListaErros.class);
+            XMLProtocoloProcessos xmlpp = new XMLProtocoloProcessos();
+            pp.setProcessando("N");
+            if (pp.getCodigo() != 100) {
+                xmlpp.setListaProcessos(xMLRotaReposicao.getListaErros().getErros());
+            }
+            xmlpp.setPp(pp);
+
+            JAXBContext context = JAXBContext.newInstance(XMLProtocoloProcessos.class);
             Marshaller m = context.createMarshaller();
 
             m.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
             sw = new StringWriter();
-            m.marshal(xMLUltimaCompraReposicao.getListaErros(), sw);
+            m.marshal(xmlpp, sw);
+            pp.setArquivo_retorno(sw.toString());
         } catch (Exception e) {
             OSUtil.error(e.getMessage());
         }
-
-        return sw.toString();
+        ProtocoloProcessosCTR.atualizaProtocoloProcessos(pp);
     }
 
     public void validaObjeto(UltimaCompraReposicao ucr) {

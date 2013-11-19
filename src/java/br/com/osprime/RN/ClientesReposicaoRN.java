@@ -10,6 +10,7 @@ import br.com.orasystems.Modelo.ListaErros;
 import br.com.orasystems.Modelo.Parametros;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
+import br.com.orasystems.XML.XMLProtocoloProcessos;
 import br.com.osprime.CTR.ClientesReposicaoCTR;
 import br.com.osprime.CTR.RotaReposicaoCTR;
 import br.com.osprime.Modelo.ClientesReposicao;
@@ -32,7 +33,7 @@ public class ClientesReposicaoRN {
 
     public static XMLClientesReposicao xMLClientesReposicao;
 
-    public String getClientesReposicao(ProtocoloProcessos pp) {
+    public void getClientesReposicao(ProtocoloProcessos pp) {
         xMLRotaReposicao = new XMLRotaReposicao();
 
         StringWriter sw = new StringWriter();
@@ -69,9 +70,15 @@ public class ClientesReposicaoRN {
                             } else {
                                 cr = cTR.atualizaClientesReposicao(cr);
                             }
+                        } else {
+                            pp.setCodigo(1018);
+                            pp.setMensagem("Arquivo enviado contêm erros de validação.");
                         }
                     }
 
+                } else {
+                    pp.setCodigo(1018);
+                    pp.setMensagem("Arquivo enviado contêm erros de validação.");
                 }
 
                 if (xMLClientesReposicao.getListaErros().getErros().isEmpty()) {
@@ -85,7 +92,7 @@ public class ClientesReposicaoRN {
                 pp.setMensagem("Arquivo XML ultrapassa o tamanho máximo permitido de 300KB (306376 Bytes)!");
                 xMLClientesReposicao.getListaErros().getErros().add(pp);
             }
-            
+
         } catch (FileNotFoundException | JAXBException e) {
             pp.setCodigo(999);
             pp.setMensagem("Arquivo XML inválido ou não está de acordo com o processo realizado!: " + e.getMessage());
@@ -95,19 +102,26 @@ public class ClientesReposicaoRN {
 
         try {
             //Create JAXB context and instantiate marshaller
-            JAXBContext context = JAXBContext.newInstance(ListaErros.class);
+            XMLProtocoloProcessos xmlpp = new XMLProtocoloProcessos();
+            pp.setProcessando("N");
+            if (pp.getCodigo() != 100) {
+                xmlpp.setListaProcessos(xMLRotaReposicao.getListaErros().getErros());
+            }
+            xmlpp.setPp(pp);
+
+            JAXBContext context = JAXBContext.newInstance(XMLProtocoloProcessos.class);
             Marshaller m = context.createMarshaller();
 
             m.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
             sw = new StringWriter();
-            m.marshal(xMLClientesReposicao.getListaErros(), sw);
+            m.marshal(xmlpp, sw);
+            pp.setArquivo_retorno(sw.toString());
         } catch (Exception e) {
             OSUtil.error(e.getMessage());
         }
-
-        return sw.toString();
+        ProtocoloProcessosCTR.atualizaProtocoloProcessos(pp);
     }
 
     public void validaObjeto(ClientesReposicao cr) {
@@ -227,7 +241,7 @@ public class ClientesReposicaoRN {
         }
 
     }
-    
+
     public String getProtocoloProcesso(String arquivoXML) {
 
         byte[] theByteArray = arquivoXML.getBytes();

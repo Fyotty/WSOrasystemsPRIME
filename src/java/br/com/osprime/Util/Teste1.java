@@ -4,12 +4,17 @@
  */
 package br.com.osprime.Util;
 
+import br.com.orasystems.CTR.EmpresasCTR;
+import br.com.orasystems.CTR.RepositoresCTR;
 import br.com.orasystems.Utilitarios.OSUtil;
-import br.com.osprime.Modelo.ClientesReposicao;
-import br.com.osprime.Modelo.UltimaCompraReposicao;
-import br.com.osprime.RN.UltimaCompraReposicaoRN;
-import br.com.osprime.XML.XMLUltimaCompraReposicao;
+import br.com.osprime.Modelo.RepositorDespesas;
+import br.com.osprime.XML.XMLRepositorDespesas;
 import java.io.StringWriter;
+import java.text.ParseException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -23,136 +28,61 @@ public class Teste1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        
         StringWriter sw = null;
+        
+        SimpleDateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = fromFormat.parse("2013-11-18");
+        } catch (ParseException ex) {
+            Logger.getLogger(Teste1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println(date);
 
-        /*XMLClientesReposicao xMLClientesReposicao = new XMLClientesReposicao();
-         xMLClientesReposicao.getEmpresas().setCnpj("71690382000170");
+        XMLRepositorDespesas xMLRepositorDespesas = new XMLRepositorDespesas();
 
-         EmpresasCTR empresasCTR = new EmpresasCTR();
-         xMLClientesReposicao.setEmpresas(empresasCTR.consultaEmpresa(xMLClientesReposicao.getEmpresas()));
+        xMLRepositorDespesas.getEmpresas().setCnpj("09116205000101");
+        EmpresasCTR empresasCTR = new EmpresasCTR();
+        xMLRepositorDespesas.setEmpresas(empresasCTR.consultaEmpresa(xMLRepositorDespesas.getEmpresas()));
 
-         ClientesReposicaoCTR cTR = new ClientesReposicaoCTR();
-         ClientesReposicao cr = new ClientesReposicao();
-         cr.setCodigo(11);
-         cr.setEmpresas(xMLClientesReposicao.getEmpresas());
-         cr = cTR.consultaClientesReposicao(cr);
+        xMLRepositorDespesas.getRepositores().setDocumento("59979836172");
+        RepositoresCTR repositoresCTR = new RepositoresCTR();
+        xMLRepositorDespesas.setRepositores(repositoresCTR.consultaRepositor(xMLRepositorDespesas.getRepositores()));
 
-         RotaReposicaoCTR rotaReposicaoCTR = new RotaReposicaoCTR();
-         cr.getRr().setCodigo(15);
-         cr.getRr().setEmpresas(xMLClientesReposicao.getEmpresas());
-         cr.setRr(rotaReposicaoCTR.consultaRotaReposicao(cr.getRr()));
+        RepositorDespesas rd = new RepositorDespesas();
 
-         ClientesRepositor clientesRepositor = new ClientesRepositor();
-         clientesRepositor.getRepositores().setDocumento("32643150848");
-         clientesRepositor.setOperacao("I");
-         cr.getListaRepositores().add(clientesRepositor);
+        rd.setEmpresas(xMLRepositorDespesas.getEmpresas());
+        rd.setRepositores(xMLRepositorDespesas.getRepositores());
+        rd.setData(date);
+        rd.setDescricao("DESPESAS COM MANUTENÇÃO DA MOTO");
+        rd.setValor(120.00);
+        rd.setObservacao("TROCA DA RELAÇÃO R$80,00 E CORRENTE R$40,00");
+        xMLRepositorDespesas.getListaRepositorDespesas().add(rd);
 
-         clientesRepositor = new ClientesRepositor();
-         clientesRepositor.getRepositores().setDocumento("329005788876");
-         clientesRepositor.setOperacao("D");
-         cr.getListaRepositores().add(clientesRepositor);
-
-         xMLClientesReposicao.getListaClientesReposicaos().add(cr);*/
-
-        XMLUltimaCompraReposicao xMLUltimaCompraReposicao = new XMLUltimaCompraReposicao();
-        xMLUltimaCompraReposicao.getEmpresas().setCnpj("12345678000199");
-
-        ClientesReposicao clientesReposicao = new ClientesReposicao();
-        clientesReposicao.setCodigo(10);
-        UltimaCompraReposicao ultimaCompraReposicao = new UltimaCompraReposicao();
-        ultimaCompraReposicao.setCodigo_produto(1234567);
-        ultimaCompraReposicao.setDescricao_produto("PRODUTO 1");
-        ultimaCompraReposicao.setUnidade("UND");
-        ultimaCompraReposicao.setQuantidade(12);
-        clientesReposicao.getListaUltimaCompraReposicao().add(ultimaCompraReposicao);
-        xMLUltimaCompraReposicao.getListaClientesReposicao().add(clientesReposicao);
-
-        clientesReposicao = new ClientesReposicao();
-        clientesReposicao.setCodigo(11);
-        ultimaCompraReposicao = new UltimaCompraReposicao();
-        ultimaCompraReposicao.setCodigo_produto(78945656);
-        ultimaCompraReposicao.setDescricao_produto("PRODUTO 2");
-        ultimaCompraReposicao.setUnidade("UND");
-        ultimaCompraReposicao.setQuantidade(15);
-        clientesReposicao.getListaUltimaCompraReposicao().add(ultimaCompraReposicao);
-        xMLUltimaCompraReposicao.getListaClientesReposicao().add(clientesReposicao);
-
-        clientesReposicao = new ClientesReposicao();
-        clientesReposicao.setCodigo(12);
-        ultimaCompraReposicao = new UltimaCompraReposicao();
-        ultimaCompraReposicao.setCodigo_produto(98854133);
-        ultimaCompraReposicao.setDescricao_produto("PRODUTO 3");
-        ultimaCompraReposicao.setUnidade("UND");
-        ultimaCompraReposicao.setQuantidade(19);
-        clientesReposicao.getListaUltimaCompraReposicao().add(ultimaCompraReposicao);
-
-        ultimaCompraReposicao = new UltimaCompraReposicao();
-        ultimaCompraReposicao.setCodigo_produto(78945656);
-        ultimaCompraReposicao.setDescricao_produto("PRODUTO 2");
-        ultimaCompraReposicao.setUnidade("UND");
-        ultimaCompraReposicao.setQuantidade(15);
-        clientesReposicao.getListaUltimaCompraReposicao().add(ultimaCompraReposicao);
-        xMLUltimaCompraReposicao.getListaClientesReposicao().add(clientesReposicao);
+        rd = new RepositorDespesas();
+        rd.setEmpresas(xMLRepositorDespesas.getEmpresas());
+        rd.setRepositores(xMLRepositorDespesas.getRepositores());
+        rd.setData(date);
+        rd.setDescricao("PAPELARIA");
+        rd.setValor(19.90);
+        rd.setObservacao("");
+        xMLRepositorDespesas.getListaRepositorDespesas().add(rd);
 
         try {
             //Create JAXB context and instantiate marshaller
-            JAXBContext context = JAXBContext.newInstance(XMLUltimaCompraReposicao.class);
+            JAXBContext context = JAXBContext.newInstance(XMLRepositorDespesas.class);
             Marshaller m = context.createMarshaller();
 
             m.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
             sw = new StringWriter();
-            m.marshal(xMLUltimaCompraReposicao, sw);
+            m.marshal(xMLRepositorDespesas, sw);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         OSUtil.info(sw.toString());
-
-        String arqXML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"yes\"?>\n"
-                + "<ULTIMACOMPRAREPOSICAO>\n"
-                + "    <empresas>\n"
-                + "        <cnpj>71690382000170</cnpj>\n"
-                + "    </empresas>\n"
-                + "    <lista>\n"
-                + "        <codigo>10</codigo>\n"
-                + "        <listaUltimaCompraReposicao>\n"
-                + "            <codigo_produto>1234567</codigo_produto>\n"
-                + "            <descricao_produto>PRODUTO 1</descricao_produto>\n"
-                + "            <unidade>UND</unidade>\n"
-                + "            <quantidade>12.0</quantidade>\n"
-                + "        </listaUltimaCompraReposicao>\n"
-                + "    </lista>\n"
-                + "    <lista>\n"
-                + "        <codigo>11</codigo>\n"
-                + "        <listaUltimaCompraReposicao>\n"
-                + "            <codigo_produto>78945656</codigo_produto>\n"
-                + "            <descricao_produto>PRODUTO 2</descricao_produto>\n"
-                + "            <unidade>UND</unidade>\n"
-                + "            <quantidade>15.0</quantidade>\n"
-                + "        </listaUltimaCompraReposicao>\n"
-                + "    </lista>\n"
-                + "    <lista>\n"
-                + "        <codigo>12</codigo>\n"
-                + "        <listaUltimaCompraReposicao>\n"
-                + "            <codigo_produto>98854133</codigo_produto>\n"
-                + "            <descricao_produto>PRODUTO 3</descricao_produto>\n"
-                + "            <unidade>UND</unidade>\n"
-                + "            <quantidade>19.0</quantidade>\n"
-                + "        </listaUltimaCompraReposicao>\n"
-                + "        <listaUltimaCompraReposicao>\n"
-                + "            <codigo_produto>78945656</codigo_produto>\n"
-                + "            <descricao_produto>PRODUTO 2</descricao_produto>\n"
-                + "            <unidade>UND</unidade>\n"
-                + "            <quantidade>15.0</quantidade>\n"
-                + "        </listaUltimaCompraReposicao>\n"
-                + "    </lista>\n"
-                + "</ULTIMACOMPRAREPOSICAO>";
-
-        UltimaCompraReposicaoRN ultimaCompraReposicaoRN = new UltimaCompraReposicaoRN();
-
-        OSUtil.info(ultimaCompraReposicaoRN.getUltimaCompraReposicao(arqXML));
     }
 }

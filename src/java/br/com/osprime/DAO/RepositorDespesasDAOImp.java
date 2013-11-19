@@ -6,6 +6,7 @@ package br.com.osprime.DAO;
 
 import br.com.orasystems.DAO.ConnectionFactory;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
+import br.com.orasystems.Utilitarios.OSUtil;
 import br.com.osprime.Modelo.RepositorDespesas;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +17,7 @@ import java.sql.ResultSet;
  */
 public class RepositorDespesasDAOImp {
     
-    public RepositorDespesas gravaClientesReposicao(RepositorDespesas rd) {
+    public RepositorDespesas gravaRepositorDespesas(RepositorDespesas rd) {
 
         ProtocoloProcessos pp = new ProtocoloProcessos();
         PreparedStatement stmt = null;
@@ -39,7 +40,7 @@ public class RepositorDespesasDAOImp {
             //codigo_empresa, codigo_repositor, data, descricao, valor,
             stmt.setInt(i++, rd.getEmpresas().getId());
             stmt.setInt(i++, rd.getRepositores().getId());
-            stmt.setDate(i++, rd.getData());
+            //stmt.setDate(i++, OSUtil.(rd.getData());
             stmt.setString(i++, rd.getDescricao());
             stmt.setDouble(i++, rd.getValor());
 

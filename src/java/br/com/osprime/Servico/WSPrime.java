@@ -5,8 +5,10 @@
 package br.com.osprime.Servico;
 
 import br.com.orasystems.RN.EmpresasRN;
+import br.com.orasystems.RN.ProtocoloProcessosRN;
 import br.com.orasystems.RN.RepositorRN;
 import br.com.osprime.RN.ClientesReposicaoRN;
+import br.com.osprime.RN.RepositorDespesasRN;
 import br.com.osprime.RN.RotaReposicaoRN;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -77,5 +79,25 @@ public class WSPrime {
         RepositorRN rN = new RepositorRN();
         
         return rN.getLoginRepositor(xmlLoginRepositor);
+    }
+    
+    /**
+     * Operação de Web service
+     */
+    @WebMethod(operationName = "recebeRepositorDespesas")
+    public String recebeRepositorDespesas(@WebParam(name = "xmlRepositorDespesas") String xmlRepositorDespesas) {
+        RepositorDespesasRN rN = new RepositorDespesasRN();
+        
+        return rN.getProtocoloProcesso(xmlRepositorDespesas);
+    }
+    
+    /**
+     * Operação de Web service
+     */
+    @WebMethod(operationName = "consultaProtocoloProcesso")
+    public String consultaProtocoloProcesso(@WebParam(name = "xmlProtocoloProcesso") String xmlProtocoloProcesso) {
+        ProtocoloProcessosRN rN = new ProtocoloProcessosRN();
+        
+        return rN.retornaXMLSolicitacaoProtocolo(xmlProtocoloProcesso);
     }
 }

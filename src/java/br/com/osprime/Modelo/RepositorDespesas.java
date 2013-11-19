@@ -6,14 +6,20 @@ package br.com.osprime.Modelo;
 
 import br.com.orasystems.Modelo.Empresas;
 import br.com.orasystems.Modelo.Repositores;
-import java.sql.Date;
+import br.com.orasystems.Utilitarios.DateAdapter;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
  * @author fernando
  */
+@XmlType(propOrder = {"data", "descricao", "valor", "observacao"})
 public class RepositorDespesas {
 
     private long id;
@@ -30,6 +36,7 @@ public class RepositorDespesas {
         this.repositores = new Repositores();
     }
 
+    @XmlTransient
     public long getId() {
         return id;
     }
@@ -38,6 +45,7 @@ public class RepositorDespesas {
         this.id = id;
     }
 
+    @XmlTransient
     public Empresas getEmpresas() {
         return empresas;
     }
@@ -46,6 +54,7 @@ public class RepositorDespesas {
         this.empresas = empresas;
     }
 
+    @XmlTransient
     public Repositores getRepositores() {
         return repositores;
     }
@@ -58,6 +67,8 @@ public class RepositorDespesas {
         return data;
     }
 
+    @XmlElement(name = "data", required = true)
+    @XmlJavaTypeAdapter(DateAdapter.class)
     public void setData(Date data) {
         this.data = data;
     }
@@ -78,6 +89,7 @@ public class RepositorDespesas {
         this.valor = valor;
     }
 
+    @XmlTransient
     public Timestamp getData_hora_envio() {
         return data_hora_envio;
     }

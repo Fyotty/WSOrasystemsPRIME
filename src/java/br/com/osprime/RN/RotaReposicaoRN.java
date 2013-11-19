@@ -10,9 +10,9 @@ import br.com.orasystems.Modelo.ListaErros;
 import br.com.orasystems.Modelo.Parametros;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
+import br.com.orasystems.XML.XMLProtocoloProcessos;
 import br.com.osprime.CTR.RotaReposicaoCTR;
 import br.com.osprime.Modelo.RotaReposicao;
-import static br.com.osprime.RN.UltimaCompraReposicaoRN.xMLUltimaCompraReposicao;
 import br.com.osprime.XML.XMLRotaReposicao;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -30,7 +30,7 @@ public class RotaReposicaoRN {
 
     public static XMLRotaReposicao xMLRotaReposicao;
 
-    public String getRotaReposicao(ProtocoloProcessos pp) {
+    public void getRotaReposicao(ProtocoloProcessos pp) {
         xMLRotaReposicao = new XMLRotaReposicao();
 
         StringWriter sw = new StringWriter();
@@ -42,9 +42,9 @@ public class RotaReposicaoRN {
 
         try {
 
-            if (OSUtil.verificaTamanhoArquivo("./temp/" + nomeArquivo + ".xml") <= 306376) {
+            if (OSUtil.verificaTamanhoArquivo(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml") <= 306376) {
 
-                FileReader reader = new FileReader("./temp/" + nomeArquivo + ".xml");
+                FileReader reader = new FileReader(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml");
 
                 //Converte a String em classe
                 JAXBContext context = JAXBContext.newInstance(XMLRotaReposicao.class);
@@ -64,44 +64,53 @@ public class RotaReposicaoRN {
                         } else {
                             rr = cTR.atualizaRotaReposicao(rr);
                         }
+                    } else {
+                        pp.setCodigo(1018);
+                        pp.setMensagem("Arquivo enviado contêm erros de validação.");
                     }
                 }
 
                 if (xMLRotaReposicao.getListaErros().getErros().isEmpty()) {
                     pp.setCodigo(100);
                     pp.setMensagem("Processo de Manutenção de Rota de Reposição realizado com sucesso!");
-                    xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
+                    xMLRotaReposicao.getListaErros().getErros().add(pp);
                 }
 
             } else {
                 pp.setCodigo(1014);
                 pp.setMensagem("Arquivo XML ultrapassa o tamanho máximo permitido de 300KB (306376 Bytes)!");
-                xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
+                xMLRotaReposicao.getListaErros().getErros().add(pp);
             }
-            
+
         } catch (FileNotFoundException | JAXBException e) {
             pp.setCodigo(999);
             pp.setMensagem("Arquivo XML inválido ou não está de acordo com o processo realizado!: " + e.getMessage());
-            xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
+            xMLRotaReposicao.getListaErros().getErros().add(pp);
             OSUtil.error(e.getMessage());
         }
 
         try {
             //Create JAXB context and instantiate marshaller
-            JAXBContext context = JAXBContext.newInstance(ListaErros.class);
+            XMLProtocoloProcessos xmlpp = new XMLProtocoloProcessos();
+            pp.setProcessando("N");
+            if (pp.getCodigo() != 100) {
+                xmlpp.setListaProcessos(xMLRotaReposicao.getListaErros().getErros());
+            }
+            xmlpp.setPp(pp);
+
+            JAXBContext context = JAXBContext.newInstance(XMLProtocoloProcessos.class);
             Marshaller m = context.createMarshaller();
 
             m.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
             sw = new StringWriter();
-            m.marshal(xMLRotaReposicao.getListaErros(), sw);
+            m.marshal(xmlpp, sw);
+            pp.setArquivo_retorno(sw.toString());
         } catch (Exception e) {
             OSUtil.error(e.getMessage());
         }
-
-        return sw.toString();
-
+        ProtocoloProcessosCTR.atualizaProtocoloProcessos(pp);
     }
 
     public void validaObjeto(RotaReposicao rr) {
@@ -112,6 +121,7 @@ public class RotaReposicaoRN {
             pp.setCodigo(33);
             pp.setMensagem("É obrigatório informar o CNPJ da empresa!");
             xMLRotaReposicao.getListaErros().getErros().add(pp);
+            pp = new ProtocoloProcessos();
         }
 
         if (OSUtil.validaString(rr.getEmpresas().getCnpj())) {
@@ -119,6 +129,7 @@ public class RotaReposicaoRN {
                 pp.setCodigo(29);
                 pp.setMensagem("Problemas ao validar o CNPJ da Empresa!");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -127,6 +138,7 @@ public class RotaReposicaoRN {
                 pp.setCodigo(34);
                 pp.setMensagem("O CNPJ da empresa deve conter 14 caracteres!");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -134,6 +146,14 @@ public class RotaReposicaoRN {
             pp.setCodigo(45);
             pp.setMensagem("Código da rota de reposição não foi informado!");
             xMLRotaReposicao.getListaErros().getErros().add(pp);
+            pp = new ProtocoloProcessos();
+        }
+
+        if (!OSUtil.validaString(rr.getDescricao())) {
+            pp.setCodigo(1017);
+            pp.setMensagem("Descrição da rota de reposição não foi informada!");
+            xMLRotaReposicao.getListaErros().getErros().add(pp);
+            pp = new ProtocoloProcessos();
         }
 
         if (!OSUtil.validaString(rr.getSegunda())) {
@@ -144,10 +164,10 @@ public class RotaReposicaoRN {
             if ((rr.getSegunda().length() >= 1)
                     && (!rr.getSegunda().equals("S"))
                     && (!rr.getSegunda().equals("N"))) {
-                pp = new ProtocoloProcessos();
                 pp.setCodigo(46);
                 pp.setMensagem("A informação que está dentro da tag segunda é invalida! Está tag só aceita S ou N.");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -159,10 +179,10 @@ public class RotaReposicaoRN {
             if ((rr.getTerca().length() >= 1)
                     && (!rr.getTerca().equals("S"))
                     && (!rr.getTerca().equals("N"))) {
-                pp = new ProtocoloProcessos();
                 pp.setCodigo(47);
                 pp.setMensagem("A informação que está dentro da tag terca é invalida! Está tag só aceita S ou N.");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -174,10 +194,10 @@ public class RotaReposicaoRN {
             if ((rr.getQuarta().length() >= 1)
                     && (!rr.getQuarta().equals("S"))
                     && (!rr.getQuarta().equals("N"))) {
-                pp = new ProtocoloProcessos();
                 pp.setCodigo(48);
                 pp.setMensagem("A informação que está dentro da tag quarta é invalida! Está tag só aceita S ou N.");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -189,10 +209,10 @@ public class RotaReposicaoRN {
             if ((rr.getQuinta().length() >= 1)
                     && (!rr.getQuinta().equals("S"))
                     && (!rr.getQuinta().equals("N"))) {
-                pp = new ProtocoloProcessos();
                 pp.setCodigo(49);
                 pp.setMensagem("A informação que está dentro da tag quinta é invalida! Está tag só aceita S ou N.");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -204,10 +224,10 @@ public class RotaReposicaoRN {
             if ((rr.getSexta().length() >= 1)
                     && (!rr.getSexta().equals("S"))
                     && (!rr.getSexta().equals("N"))) {
-                pp = new ProtocoloProcessos();
                 pp.setCodigo(50);
                 pp.setMensagem("A informação que está dentro da tag sexta é invalida! Está tag só aceita S ou N.");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -219,10 +239,10 @@ public class RotaReposicaoRN {
             if ((rr.getSabado().length() >= 1)
                     && (!rr.getSabado().equals("S"))
                     && (!rr.getSabado().equals("N"))) {
-                pp = new ProtocoloProcessos();
                 pp.setCodigo(51);
                 pp.setMensagem("A informação que está dentro da tag sabado é invalida! Está tag só aceita S ou N.");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
+                pp = new ProtocoloProcessos();
             }
         }
 
@@ -234,7 +254,6 @@ public class RotaReposicaoRN {
             if ((rr.getDomingo().length() >= 1)
                     && (!rr.getDomingo().equals("S"))
                     && (!rr.getDomingo().equals("N"))) {
-                pp = new ProtocoloProcessos();
                 pp.setCodigo(52);
                 pp.setMensagem("A informação que está dentro da tag domingo é invalida! Está tag só aceita S ou N.");
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
@@ -266,6 +285,8 @@ public class RotaReposicaoRN {
             }
         }).start();
 
-        return OSUtil.xmlRetornoProtocoloProcesso(pp);
+        XMLProtocoloProcessos xMLProtocoloProcessos = new XMLProtocoloProcessos();
+        xMLProtocoloProcessos.setPp(pp);
+        return OSUtil.xmlListaProtocoloProcesso(xMLProtocoloProcessos);
     }
 }

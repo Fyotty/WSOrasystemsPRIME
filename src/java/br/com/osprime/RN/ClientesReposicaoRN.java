@@ -16,7 +16,6 @@ import br.com.osprime.Modelo.ClientesReposicao;
 import static br.com.osprime.RN.RotaReposicaoRN.xMLRotaReposicao;
 import br.com.osprime.XML.XMLClientesReposicao;
 import br.com.osprime.XML.XMLRotaReposicao;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringWriter;

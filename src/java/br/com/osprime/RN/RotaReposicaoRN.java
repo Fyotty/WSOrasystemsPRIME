@@ -6,7 +6,6 @@ package br.com.osprime.RN;
 
 import br.com.orasystems.CTR.EmpresasCTR;
 import br.com.orasystems.CTR.ProtocoloProcessosCTR;
-import br.com.orasystems.Modelo.ListaErros;
 import br.com.orasystems.Modelo.Parametros;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
@@ -94,7 +93,7 @@ public class RotaReposicaoRN {
             XMLProtocoloProcessos xmlpp = new XMLProtocoloProcessos();
             pp.setProcessando("N");
             if (pp.getCodigo() != 100) {
-                xmlpp.setListaProcessos(xMLRotaReposicao.getListaErros().getErros());
+                xmlpp.getListaProcessos().add(xMLRotaReposicao.getListaErros());
             }
             xmlpp.setPp(pp);
 

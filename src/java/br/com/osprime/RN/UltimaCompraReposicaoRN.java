@@ -7,7 +7,7 @@ package br.com.osprime.RN;
 import br.com.orasystems.CTR.EmpresasCTR;
 import br.com.orasystems.CTR.ProtocoloProcessosCTR;
 import br.com.orasystems.Modelo.Empresas;
-import br.com.orasystems.Modelo.ListaErros;
+import br.com.orasystems.Modelo.Parametros;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
 import br.com.orasystems.XML.XMLProtocoloProcessos;
@@ -15,7 +15,6 @@ import br.com.osprime.CTR.ClientesReposicaoCTR;
 import br.com.osprime.CTR.UltimaCompraReposicaoCTR;
 import br.com.osprime.Modelo.ClientesReposicao;
 import br.com.osprime.Modelo.UltimaCompraReposicao;
-import static br.com.osprime.RN.RotaReposicaoRN.xMLRotaReposicao;
 import br.com.osprime.XML.XMLUltimaCompraReposicao;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -33,21 +32,20 @@ public class UltimaCompraReposicaoRN {
 
     public static XMLUltimaCompraReposicao xMLUltimaCompraReposicao;
 
-    public void getUltimaCompraReposicao(String arqXML) {
+    public void getUltimaCompraReposicao(ProtocoloProcessos pp) {
         xMLUltimaCompraReposicao = new XMLUltimaCompraReposicao();
 
-        ProtocoloProcessos pp = new ProtocoloProcessos();
         StringWriter sw = null;
 
         try {
             String nomeArquivo = OSUtil.geraChave();
 
             OSUtil.salvarArquivoXMLFormatada(
-                    arqXML, "./temp/", nomeArquivo + ".xml");
+                    pp.getArquivo_enviado(), Parametros.caminho_pasta_xmls + "temp\\", nomeArquivo + ".xml");
 
-            if (OSUtil.verificaTamanhoArquivo("./temp/" + nomeArquivo + ".xml") <= 306376) {
+            if (OSUtil.verificaTamanhoArquivo(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml") <= 306376) {
 
-                FileReader reader = new FileReader("./temp/" + nomeArquivo + ".xml");
+                FileReader reader = new FileReader(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml");
 
                 //Converte a String em classe
                 JAXBContext context = JAXBContext.newInstance(XMLUltimaCompraReposicao.class);
@@ -114,7 +112,7 @@ public class UltimaCompraReposicaoRN {
             XMLProtocoloProcessos xmlpp = new XMLProtocoloProcessos();
             pp.setProcessando("N");
             if (pp.getCodigo() != 100) {
-                xmlpp.setListaProcessos(xMLRotaReposicao.getListaErros().getErros());
+                xmlpp.getListaProcessos().add(xMLUltimaCompraReposicao.getListaErros());
             }
             xmlpp.setPp(pp);
 
@@ -245,5 +243,34 @@ public class UltimaCompraReposicaoRN {
             }
         }
 
+    }
+
+    public String getProtocoloProcesso(String arquivoXML) {
+
+        byte[] theByteArray = arquivoXML.getBytes();
+
+        ProtocoloProcessos pp = new ProtocoloProcessos();
+        pp.setXml_envio(theByteArray);
+        pp.setArquivo_enviado(arquivoXML);
+        pp.setChave_protocolo(OSUtil.geraChave());
+
+        ProtocoloProcessosCTR ctr = new ProtocoloProcessosCTR();
+        /*
+         * Grava o Protocolo de envio
+         */
+        pp = ctr.gravaProtocoloProcessos(pp);
+
+        final ProtocoloProcessos processos = pp;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getUltimaCompraReposicao(processos);
+            }
+        }).start();
+
+        XMLProtocoloProcessos xMLProtocoloProcessos = new XMLProtocoloProcessos();
+        xMLProtocoloProcessos.setPp(pp);
+        return OSUtil.xmlListaProtocoloProcesso(xMLProtocoloProcessos);
     }
 }

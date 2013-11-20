@@ -4,19 +4,8 @@
  */
 package br.com.osprime.Util;
 
-import br.com.orasystems.CTR.EmpresasCTR;
-import br.com.orasystems.CTR.RepositoresCTR;
-import br.com.orasystems.Utilitarios.OSUtil;
-import br.com.osprime.Modelo.RepositorDespesas;
-import br.com.osprime.XML.XMLRepositorDespesas;
-import java.io.StringWriter;
-import java.text.ParseException;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+import br.com.orasystems.RN.ProtocoloProcessosRN;
+import br.com.osprime.RN.RotaReposicaoRN;
 
 /**
  *
@@ -29,60 +18,45 @@ public class Teste1 {
      */
     public static void main(String[] args) {
         
-        StringWriter sw = null;
+        String xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"yes\"?>\n" +
+"<ROTAREPOSICAO>\n" +
+"    <empresas>\n" +
+"        <cnpj>71690382000170</cnpj>\n" +
+"    </empresas>\n" +
+"    <lista>\n" +
+"        <codigo>37</codigo>\n" +
+"        <segunda>N</segunda>\n" +
+"        <terca>N</terca>\n" +
+"        <quarta>N</quarta>\n" +
+"        <quinta>S</quinta>\n" +
+"        <sexta>N</sexta>\n" +
+"        <sabado>N</sabado>\n" +
+"        <domingo>N</domingo>\n" +
+"        <sequencia>0</sequencia>\n" +
+"        <descricao>QUINTA-FEIRA</descricao>\n" +
+"    </lista>\n" +
+"	<lista>\n" +
+"        <codigo>59</codigo>\n" +
+"        <segunda>S</segunda>\n" +
+"        <terca>N</terca>\n" +
+"        <quarta>N</quarta>\n" +
+"        <quinta>N</quinta>\n" +
+"        <sexta>N</sexta>\n" +
+"        <sabado>N</sabado>\n" +
+"        <domingo>N</domingo>\n" +
+"        <sequencia>0</sequencia>\n" +
+"        <descricao></descricao>\n" +
+"    </lista>\n" +
+"</ROTAREPOSICAO>";
         
-        SimpleDateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = null;
-        try {
-            date = fromFormat.parse("2013-11-18");
-        } catch (ParseException ex) {
-            Logger.getLogger(Teste1.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println(date);
-
-        XMLRepositorDespesas xMLRepositorDespesas = new XMLRepositorDespesas();
-
-        xMLRepositorDespesas.getEmpresas().setCnpj("09116205000101");
-        EmpresasCTR empresasCTR = new EmpresasCTR();
-        xMLRepositorDespesas.setEmpresas(empresasCTR.consultaEmpresa(xMLRepositorDespesas.getEmpresas()));
-
-        xMLRepositorDespesas.getRepositores().setDocumento("59979836172");
-        RepositoresCTR repositoresCTR = new RepositoresCTR();
-        xMLRepositorDespesas.setRepositores(repositoresCTR.consultaRepositor(xMLRepositorDespesas.getRepositores()));
-
-        RepositorDespesas rd = new RepositorDespesas();
-
-        rd.setEmpresas(xMLRepositorDespesas.getEmpresas());
-        rd.setRepositores(xMLRepositorDespesas.getRepositores());
-        rd.setData(date);
-        rd.setDescricao("DESPESAS COM MANUTENÇÃO DA MOTO");
-        rd.setValor(120.00);
-        rd.setObservacao("TROCA DA RELAÇÃO R$80,00 E CORRENTE R$40,00");
-        xMLRepositorDespesas.getListaRepositorDespesas().add(rd);
-
-        rd = new RepositorDespesas();
-        rd.setEmpresas(xMLRepositorDespesas.getEmpresas());
-        rd.setRepositores(xMLRepositorDespesas.getRepositores());
-        rd.setData(date);
-        rd.setDescricao("PAPELARIA");
-        rd.setValor(19.90);
-        rd.setObservacao("");
-        xMLRepositorDespesas.getListaRepositorDespesas().add(rd);
-
-        try {
-            //Create JAXB context and instantiate marshaller
-            JAXBContext context = JAXBContext.newInstance(XMLRepositorDespesas.class);
-            Marshaller m = context.createMarshaller();
-
-            m.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-            sw = new StringWriter();
-            m.marshal(xMLRepositorDespesas, sw);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        OSUtil.info(sw.toString());
+        RotaReposicaoRN rN = new RotaReposicaoRN();
+        String retorno = rN.getProtocoloProcesso(xml);
+        System.out.println("*** Arquivo retorno 1 *** " + retorno);
+        
+        ProtocoloProcessosRN pPRN = new ProtocoloProcessosRN();
+        
+        String fimRetorno = pPRN.retornaXMLSolicitacaoProtocolo(retorno);
+        System.out.println("*** Arquivo retorno 2 *** " + fimRetorno);
+        
     }
 }

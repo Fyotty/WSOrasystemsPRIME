@@ -7,10 +7,10 @@ package br.com.osprime.RN;
 import br.com.orasystems.CTR.EmpresasCTR;
 import br.com.orasystems.CTR.ProtocoloProcessosCTR;
 import br.com.orasystems.CTR.RepositoresCTR;
-import br.com.orasystems.Modelo.ListaErros;
 import br.com.orasystems.Modelo.Parametros;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
+import br.com.orasystems.XML.XMLProtocoloProcessos;
 import br.com.osprime.CTR.RepositorDespesasCTR;
 import br.com.osprime.Modelo.RepositorDespesas;
 import br.com.osprime.XML.XMLRepositorDespesas;
@@ -30,7 +30,7 @@ public class RepositorDespesasRN {
 
     public static XMLRepositorDespesas xMLRepositorDespesas;
 
-    public String getRepositorDespesas(ProtocoloProcessos pp) {
+    public void getRepositorDespesas(ProtocoloProcessos pp) {
         xMLRepositorDespesas = new XMLRepositorDespesas();
 
         StringWriter sw = new StringWriter();
@@ -42,9 +42,9 @@ public class RepositorDespesasRN {
 
         try {
 
-            if (OSUtil.verificaTamanhoArquivo("./temp/" + nomeArquivo + ".xml") <= 306376) {
+            if (OSUtil.verificaTamanhoArquivo(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml") <= 306376) {
 
-                FileReader reader = new FileReader("./temp/" + nomeArquivo + ".xml");
+                FileReader reader = new FileReader(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml");
 
                 //Converte a String em classe
                 JAXBContext context = JAXBContext.newInstance(XMLRepositorDespesas.class);
@@ -55,6 +55,9 @@ public class RepositorDespesasRN {
                 for (RepositorDespesas rd : xMLRepositorDespesas.getListaRepositorDespesas()) {
 
                     rd.setEmpresas(empresasCTR.consultaEmpresa(xMLRepositorDespesas.getEmpresas()));
+                    xMLRepositorDespesas.getRepositores().setEmpresas(rd.getEmpresas());
+                    //rd.getRepositores().setEmpresas(rd.getEmpresas());
+                    rd.setRepositores(repositoresCTR.consultaRepositor(xMLRepositorDespesas.getRepositores()));
                     //Valida o Cadastro
                     validaObjeto(rd);
                     if (xMLRepositorDespesas.getListaErros().getErros().isEmpty()) {
@@ -65,7 +68,7 @@ public class RepositorDespesasRN {
 
                 if (xMLRepositorDespesas.getListaErros().getErros().isEmpty()) {
                     pp.setCodigo(100);
-                    pp.setMensagem("Processo de Manutenção de Rota de Reposição realizado com sucesso!");
+                    pp.setMensagem("Despesas incluidas com sucesso!");
                     xMLRepositorDespesas.getListaErros().getErros().add(pp);
                 }
 
@@ -80,23 +83,32 @@ public class RepositorDespesasRN {
             pp.setMensagem("Arquivo XML inválido ou não está de acordo com o processo realizado!: " + e.getMessage());
             xMLRepositorDespesas.getListaErros().getErros().add(pp);
             OSUtil.error(e.getMessage());
+            e.printStackTrace();
         }
-
+        
         try {
             //Create JAXB context and instantiate marshaller
-            JAXBContext context = JAXBContext.newInstance(ListaErros.class);
+            XMLProtocoloProcessos xmlpp = new XMLProtocoloProcessos();
+            pp.setProcessando("N");
+            if (pp.getCodigo() != 100) {
+                xmlpp.getListaProcessos().add(xMLRepositorDespesas.getListaErros());
+            }
+            xmlpp.setPp(pp);
+
+            JAXBContext context = JAXBContext.newInstance(XMLProtocoloProcessos.class);
             Marshaller m = context.createMarshaller();
 
             m.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
             sw = new StringWriter();
-            m.marshal(xMLRepositorDespesas.getListaErros(), sw);
+            m.marshal(xmlpp, sw);
+            pp.setArquivo_retorno(sw.toString());
         } catch (Exception e) {
             OSUtil.error(e.getMessage());
+            e.printStackTrace();
         }
-
-        return sw.toString();
+        ProtocoloProcessosCTR.atualizaProtocoloProcessos(pp);
 
     }
 
@@ -112,6 +124,7 @@ public class RepositorDespesasRN {
 
         if (OSUtil.validaString(rd.getEmpresas().getCnpj())) {
             if (!OSUtil.isCNPJ(rd.getEmpresas().getCnpj())) {
+                pp = new ProtocoloProcessos();
                 pp.setCodigo(29);
                 pp.setMensagem("Problemas ao validar o CNPJ da Empresa!");
                 xMLRepositorDespesas.getListaErros().getErros().add(pp);
@@ -120,6 +133,7 @@ public class RepositorDespesasRN {
 
         if (OSUtil.validaString(rd.getEmpresas().getCnpj())) {
             if (rd.getEmpresas().getCnpj().length() != 14) {
+                pp = new ProtocoloProcessos();
                 pp.setCodigo(34);
                 pp.setMensagem("O CNPJ da empresa deve conter 14 caracteres!");
                 xMLRepositorDespesas.getListaErros().getErros().add(pp);
@@ -130,6 +144,13 @@ public class RepositorDespesasRN {
             pp = new ProtocoloProcessos();
             pp.setCodigo(62);
             pp.setMensagem("É obrigatório informar o documento do repositor.");
+            xMLRepositorDespesas.getListaErros().getErros().add(pp);
+        }
+        
+        if (rd.getRepositores().getId() == 0) {
+            pp = new ProtocoloProcessos();
+            pp.setCodigo(2);
+            pp.setMensagem("Repositor não existe!");
             xMLRepositorDespesas.getListaErros().getErros().add(pp);
         }
         
@@ -179,6 +200,8 @@ public class RepositorDespesasRN {
             }
         }).start();
 
-        return OSUtil.xmlRetornoProtocoloProcesso(pp);
+        XMLProtocoloProcessos xMLProtocoloProcessos = new XMLProtocoloProcessos();
+        xMLProtocoloProcessos.setPp(pp);
+        return OSUtil.xmlListaProtocoloProcesso(xMLProtocoloProcessos);
     }
 }

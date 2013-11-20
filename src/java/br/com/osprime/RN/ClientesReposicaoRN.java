@@ -6,7 +6,6 @@ package br.com.osprime.RN;
 
 import br.com.orasystems.CTR.EmpresasCTR;
 import br.com.orasystems.CTR.ProtocoloProcessosCTR;
-import br.com.orasystems.Modelo.ListaErros;
 import br.com.orasystems.Modelo.Parametros;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
@@ -45,9 +44,9 @@ public class ClientesReposicaoRN {
 
         try {
 
-            if (OSUtil.verificaTamanhoArquivo("./temp/" + nomeArquivo + ".xml") <= 306376) {
+            if (OSUtil.verificaTamanhoArquivo(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml") <= 306376) {
 
-                FileReader reader = new FileReader("./temp/" + nomeArquivo + ".xml");
+                FileReader reader = new FileReader(Parametros.caminho_pasta_xmls + "temp\\" + nomeArquivo + ".xml");
 
                 //Converte a String em classe
                 JAXBContext context = JAXBContext.newInstance(XMLClientesReposicao.class);
@@ -105,7 +104,7 @@ public class ClientesReposicaoRN {
             XMLProtocoloProcessos xmlpp = new XMLProtocoloProcessos();
             pp.setProcessando("N");
             if (pp.getCodigo() != 100) {
-                xmlpp.setListaProcessos(xMLRotaReposicao.getListaErros().getErros());
+                xmlpp.getListaProcessos().add(xMLClientesReposicao.getListaErros());
             }
             xmlpp.setPp(pp);
 
@@ -266,6 +265,8 @@ public class ClientesReposicaoRN {
             }
         }).start();
 
-        return OSUtil.xmlRetornoProtocoloProcesso(pp);
+        XMLProtocoloProcessos xMLProtocoloProcessos = new XMLProtocoloProcessos();
+        xMLProtocoloProcessos.setPp(pp);
+        return OSUtil.xmlListaProtocoloProcesso(xMLProtocoloProcessos);
     }
 }

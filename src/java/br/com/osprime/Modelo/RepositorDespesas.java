@@ -7,7 +7,7 @@ package br.com.osprime.Modelo;
 import br.com.orasystems.Modelo.Empresas;
 import br.com.orasystems.Modelo.Repositores;
 import br.com.orasystems.Utilitarios.DateAdapter;
-import java.util.Date;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;

@@ -150,7 +150,8 @@ public class RotaReposicaoRN {
 
         if (!OSUtil.validaString(rr.getDescricao())) {
             pp.setCodigo(1017);
-            pp.setMensagem("Descrição da rota de reposição não foi informada!");
+            pp.setMensagem("Descrição da rota de reposição não foi informada!"
+                    + "Corrigir cadastro, codigo = " + rr.getCodigo());
             xMLRotaReposicao.getListaErros().getErros().add(pp);
             pp = new ProtocoloProcessos();
         }
@@ -164,7 +165,8 @@ public class RotaReposicaoRN {
                     && (!rr.getSegunda().equals("S"))
                     && (!rr.getSegunda().equals("N"))) {
                 pp.setCodigo(46);
-                pp.setMensagem("A informação que está dentro da tag segunda é invalida! Está tag só aceita S ou N.");
+                pp.setMensagem("A informação que está dentro da tag segunda é invalida! Está tag só aceita S ou N."
+                        + "Corrigir cadastro, codigo = " + rr.getCodigo());
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
                 pp = new ProtocoloProcessos();
             }
@@ -179,7 +181,8 @@ public class RotaReposicaoRN {
                     && (!rr.getTerca().equals("S"))
                     && (!rr.getTerca().equals("N"))) {
                 pp.setCodigo(47);
-                pp.setMensagem("A informação que está dentro da tag terca é invalida! Está tag só aceita S ou N.");
+                pp.setMensagem("A informação que está dentro da tag terca é invalida! Está tag só aceita S ou N."
+                        + "Corrigir cadastro, codigo = " + rr.getCodigo());
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
                 pp = new ProtocoloProcessos();
             }
@@ -194,7 +197,8 @@ public class RotaReposicaoRN {
                     && (!rr.getQuarta().equals("S"))
                     && (!rr.getQuarta().equals("N"))) {
                 pp.setCodigo(48);
-                pp.setMensagem("A informação que está dentro da tag quarta é invalida! Está tag só aceita S ou N.");
+                pp.setMensagem("A informação que está dentro da tag quarta é invalida! Está tag só aceita S ou N."
+                        + "Corrigir cadastro, codigo = " + rr.getCodigo());
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
                 pp = new ProtocoloProcessos();
             }
@@ -209,7 +213,8 @@ public class RotaReposicaoRN {
                     && (!rr.getQuinta().equals("S"))
                     && (!rr.getQuinta().equals("N"))) {
                 pp.setCodigo(49);
-                pp.setMensagem("A informação que está dentro da tag quinta é invalida! Está tag só aceita S ou N.");
+                pp.setMensagem("A informação que está dentro da tag quinta é invalida! Está tag só aceita S ou N."
+                        + "Corrigir cadastro, codigo = " + rr.getCodigo());
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
                 pp = new ProtocoloProcessos();
             }
@@ -224,7 +229,8 @@ public class RotaReposicaoRN {
                     && (!rr.getSexta().equals("S"))
                     && (!rr.getSexta().equals("N"))) {
                 pp.setCodigo(50);
-                pp.setMensagem("A informação que está dentro da tag sexta é invalida! Está tag só aceita S ou N.");
+                pp.setMensagem("A informação que está dentro da tag sexta é invalida! Está tag só aceita S ou N."
+                        + "Corrigir cadastro, codigo = " + rr.getCodigo());
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
                 pp = new ProtocoloProcessos();
             }
@@ -239,7 +245,8 @@ public class RotaReposicaoRN {
                     && (!rr.getSabado().equals("S"))
                     && (!rr.getSabado().equals("N"))) {
                 pp.setCodigo(51);
-                pp.setMensagem("A informação que está dentro da tag sabado é invalida! Está tag só aceita S ou N.");
+                pp.setMensagem("A informação que está dentro da tag sabado é invalida! Está tag só aceita S ou N."
+                        + "Corrigir cadastro, codigo = " + rr.getCodigo());
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
                 pp = new ProtocoloProcessos();
             }
@@ -254,7 +261,8 @@ public class RotaReposicaoRN {
                     && (!rr.getDomingo().equals("S"))
                     && (!rr.getDomingo().equals("N"))) {
                 pp.setCodigo(52);
-                pp.setMensagem("A informação que está dentro da tag domingo é invalida! Está tag só aceita S ou N.");
+                pp.setMensagem("A informação que está dentro da tag domingo é invalida! Está tag só aceita S ou N."
+                        + "Corrigir cadastro, codigo = " + rr.getCodigo());
                 xMLRotaReposicao.getListaErros().getErros().add(pp);
             }
         }

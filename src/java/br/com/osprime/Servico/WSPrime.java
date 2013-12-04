@@ -7,10 +7,14 @@ package br.com.osprime.Servico;
 import br.com.orasystems.RN.EmpresasRN;
 import br.com.orasystems.RN.ProtocoloProcessosRN;
 import br.com.orasystems.RN.RepositorRN;
+import br.com.osprime.RN.CargaFullRN;
 import br.com.osprime.RN.ClientesReposicaoRN;
+import br.com.osprime.RN.EventosRN;
+import br.com.osprime.RN.OcorrenciasEventoRN;
 import br.com.osprime.RN.RepositorDespCombustiveisRN;
 import br.com.osprime.RN.RepositorDespesasRN;
 import br.com.osprime.RN.RotaReposicaoRN;
+import br.com.osprime.RN.UltimaCompraReposicaoRN;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -110,5 +114,45 @@ public class WSPrime {
         RepositorDespCombustiveisRN rN = new RepositorDespCombustiveisRN();
         
         return rN.getProtocoloProcesso(xmlRepositorDespCombustiveis);
+    }
+    
+    /**
+     * Operação de Web service
+     */
+    @WebMethod(operationName = "recebeUltimaCompraReposicao")
+    public String recebeUltimaCompraReposicao(@WebParam(name = "xmlUltimaCompraReposicao") String xmlUltimaCompraReposicao) {
+        UltimaCompraReposicaoRN rN = new UltimaCompraReposicaoRN();
+        
+        return rN.getProtocoloProcesso(xmlUltimaCompraReposicao);
+    }
+    
+    /**
+     * Operação de Web service
+     */
+    @WebMethod(operationName = "recebeEvento")
+    public String recebeEvento(@WebParam(name = "xmlEvento") String xmlEvento) {
+        EventosRN rN = new EventosRN();
+        
+        return rN.getProtocoloProcesso(xmlEvento);
+    }
+    
+    /**
+     * Operação de Web service
+     */
+    @WebMethod(operationName = "atualizaCargaFull")
+    public String atualizaCargaFull(@WebParam(name = "xmlCargaFull") String xmlCargaFull) {
+        CargaFullRN rN = new CargaFullRN();
+        
+        return rN.getProtocoloProcesso(xmlCargaFull);
+    }
+    
+    /**
+     * Operação de Web service
+     */
+    @WebMethod(operationName = "recebeOcorrenciasEvento")
+    public String recebeOcorrenciasEvento(@WebParam(name = "xmlOcorrenciasEvento") String xmlOcorrenciasEvento) {
+        OcorrenciasEventoRN rN = new OcorrenciasEventoRN();
+        
+        return rN.getProtocoloProcesso(xmlOcorrenciasEvento);
     }
 }

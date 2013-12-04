@@ -5,6 +5,7 @@
 package br.com.osprime.DAO;
 
 import br.com.osprime.Modelo.ClientesReposicao;
+import br.com.osprime.XML.XMLCargaFull;
 
 /**
  *
@@ -19,5 +20,7 @@ public interface ClientesReposicaoDAO {
     public ClientesReposicao atualizaClientesReposicao(ClientesReposicao cr);
     
     public ClientesReposicao existeClientesReposicao(ClientesReposicao cr);
+    
+    public XMLCargaFull listaClientesReposicao(XMLCargaFull xMLCargaFull);;
     
 }

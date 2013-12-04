@@ -5,6 +5,7 @@
 package br.com.osprime.DAO;
 
 import br.com.osprime.Modelo.RotaReposicao;
+import br.com.osprime.XML.XMLCargaFull;
 
 /**
  *
@@ -19,5 +20,7 @@ public interface RotaReposicaoDAO {
     public RotaReposicao atualizaRotaReposicao(RotaReposicao rr);
     
     public RotaReposicao existeRotaReposicao(RotaReposicao rr);
+    
+    public XMLCargaFull listaRotaReposicao(XMLCargaFull xMLCargaFull);
     
 }

@@ -7,6 +7,7 @@ package br.com.osprime.DAO;
 import br.com.orasystems.DAO.ConnectionFactory;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.osprime.Modelo.RepositorDespesas;
+import br.com.osprime.RN.RepositorDespesasRN;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -57,8 +58,9 @@ public class RepositorDespesasDAOImp {
             conexao.connection.close();
 
         } catch (Exception e) {
-            pp.setCodigo(1010);
-            pp.setMensagem("Problemas ao cadastrar o Cliente de Reposição! " + e.getMessage());
+            pp.setCodigo(1055);
+            pp.setMensagem("Problemas ao cadastrar as despesas do repositor! " + e.getMessage());
+            RepositorDespesasRN.xMLRepositorDespesas.getListaErros().getErros().add(pp);
             e.printStackTrace();
         }
         return rd;

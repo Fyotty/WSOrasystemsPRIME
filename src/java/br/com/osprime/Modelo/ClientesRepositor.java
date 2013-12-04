@@ -6,7 +6,10 @@ package br.com.osprime.Modelo;
 
 import br.com.orasystems.Modelo.Empresas;
 import br.com.orasystems.Modelo.Repositores;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -14,19 +17,20 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author fernando
  */
-@XmlType(propOrder = {"repositores", "operacao"})
+@XmlType(propOrder = {"repositores", "listaRotaReposicao"})
 public class ClientesRepositor {
-    
+
     private int id;
     private Empresas empresas;
     private ClientesReposicao clientesReposicao;
     private Repositores repositores;
-    private String operacao;
+    private List<RotaReposicao> listaRotaReposicao;
 
     public ClientesRepositor() {
         this.empresas = new Empresas();
         this.clientesReposicao = new ClientesReposicao();
         this.repositores = new Repositores();
+        this.listaRotaReposicao = new ArrayList<>();
     }
 
     @XmlTransient
@@ -56,6 +60,7 @@ public class ClientesRepositor {
         this.clientesReposicao = clientesReposicao;
     }
 
+    @XmlElement(name = "repositor", required = true)
     public Repositores getRepositores() {
         return repositores;
     }
@@ -64,22 +69,23 @@ public class ClientesRepositor {
         this.repositores = repositores;
     }
 
-    public String getOperacao() {
-        return operacao;
+    @XmlElement(name = "rr", required = true)
+    public List<RotaReposicao> getListaRotaReposicao() {
+        return listaRotaReposicao;
     }
 
-    public void setOperacao(String operacao) {
-        this.operacao = operacao;
+    public void setListaRotaReposicao(List<RotaReposicao> listaRotaReposicao) {
+        this.listaRotaReposicao = listaRotaReposicao;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + this.id;
-        hash = 97 * hash + Objects.hashCode(this.empresas);
-        hash = 97 * hash + Objects.hashCode(this.clientesReposicao);
-        hash = 97 * hash + Objects.hashCode(this.repositores);
-        hash = 97 * hash + Objects.hashCode(this.operacao);
+        int hash = 7;
+        hash = 29 * hash + this.id;
+        hash = 29 * hash + Objects.hashCode(this.empresas);
+        hash = 29 * hash + Objects.hashCode(this.clientesReposicao);
+        hash = 29 * hash + Objects.hashCode(this.repositores);
+        hash = 29 * hash + Objects.hashCode(this.listaRotaReposicao);
         return hash;
     }
 
@@ -104,10 +110,9 @@ public class ClientesRepositor {
         if (!Objects.equals(this.repositores, other.repositores)) {
             return false;
         }
-        if (!Objects.equals(this.operacao, other.operacao)) {
+        if (!Objects.equals(this.listaRotaReposicao, other.listaRotaReposicao)) {
             return false;
         }
         return true;
     }
-
 }

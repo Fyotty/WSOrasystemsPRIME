@@ -12,11 +12,8 @@ import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
 import br.com.orasystems.XML.XMLProtocoloProcessos;
 import br.com.osprime.CTR.RepositorDespCombustiveisCTR;
-import br.com.osprime.CTR.RepositorDespesasCTR;
 import br.com.osprime.Modelo.RepositorDespCombustiveis;
-import br.com.osprime.Modelo.RepositorDespesas;
 import br.com.osprime.XML.XMLRepositorDespCombustiveis;
-import br.com.osprime.XML.XMLRepositorDespesas;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringWriter;
@@ -69,7 +66,8 @@ public class RepositorDespCombustiveisRN {
                     }
                 }
 
-                if (xMLRepositorDespCombustiveis.getListaErros().getErros().isEmpty()) {
+                if ((xMLRepositorDespCombustiveis.getListaErros().getErros().isEmpty()) && 
+                        (!xMLRepositorDespCombustiveis.getListaRepositorDespCombustiveis().isEmpty())) {
                     pp.setCodigo(100);
                     pp.setMensagem("Despesas com combutivel incluidas com sucesso!");
                     xMLRepositorDespCombustiveis.getListaErros().getErros().add(pp);

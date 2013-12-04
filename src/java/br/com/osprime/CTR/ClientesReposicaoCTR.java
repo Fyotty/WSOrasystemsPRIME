@@ -7,6 +7,7 @@ package br.com.osprime.CTR;
 import br.com.osprime.DAO.ClientesReposicaoDAO;
 import br.com.osprime.DAO.ClientesReposicaoDAOImp;
 import br.com.osprime.Modelo.ClientesReposicao;
+import br.com.osprime.XML.XMLCargaFull;
 
 /**
  *
@@ -34,6 +35,11 @@ public class ClientesReposicaoCTR implements ClientesReposicaoDAO {
     @Override
     public ClientesReposicao existeClientesReposicao(ClientesReposicao cr) {
         return dao.existeClientesReposicao(cr);
+    }
+
+    @Override
+    public XMLCargaFull listaClientesReposicao(XMLCargaFull xMLCargaFull) {
+        return dao.listaClientesReposicao(xMLCargaFull);
     }
     
 }

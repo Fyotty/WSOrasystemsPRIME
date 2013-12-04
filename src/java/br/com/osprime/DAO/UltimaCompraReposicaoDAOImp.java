@@ -7,10 +7,13 @@ package br.com.osprime.DAO;
 import br.com.orasystems.DAO.ConnectionFactory;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
+import br.com.osprime.Modelo.ClientesReposicao;
 import br.com.osprime.Modelo.UltimaCompraReposicao;
 import br.com.osprime.RN.RotaReposicaoRN;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -94,6 +97,50 @@ public class UltimaCompraReposicaoDAOImp {
             OSUtil.error(e.getCause().getMessage());
             e.printStackTrace();
         }
+    }
+    
+    public List<UltimaCompraReposicao> listaUltimaCompraReposicao(ClientesReposicao cr) {
+
+        String sql = null;
+        ResultSet rs = null;
+        PreparedStatement stmt = null;
+        List<UltimaCompraReposicao> lista = new ArrayList<>();
+
+        try {
+            ConnectionFactory conexao = new ConnectionFactory();
+
+            sql = "select * from ultima_compra_reposicao "
+                    + " where codigo_cliente_reposicao = ?";
+
+            stmt = conexao.connection.prepareStatement(sql);
+            stmt.setInt(1, cr.getId());
+
+            System.out.println(stmt);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                
+                UltimaCompraReposicao ucr = new UltimaCompraReposicao();
+                
+                ucr.setId(rs.getLong("id"));
+                ucr.setCodigo_produto(rs.getLong("codigo_produto"));
+                ucr.setDescricao_produto(rs.getString("descricao_produto"));
+                ucr.setUnidade(rs.getString("unidade"));
+                ucr.setQuantidade(rs.getDouble("quantidade"));
+                
+               lista.add(ucr);
+            }
+
+            rs.close();
+            stmt.close();
+            conexao.connection.close();
+
+        } catch (Exception e) {
+            OSUtil.error(e.getMessage());
+            OSUtil.error(e.getCause().getMessage());
+            e.printStackTrace();
+        }
+        return lista;
     }
     
 }

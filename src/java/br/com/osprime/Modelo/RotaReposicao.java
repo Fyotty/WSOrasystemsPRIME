@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author fernando
  */
 //@XmlRootElement(name = "ROTAREPOSICAO")
-@XmlType(propOrder = {"codigo", "segunda", "terca", "quarta", "quinta",
+@XmlType(propOrder = {"id", "codigo", "segunda", "terca", "quarta", "quinta",
                       "sexta", "sabado", "domingo", "sequencia", "descricao"})
 public class RotaReposicao {
 
@@ -35,7 +35,7 @@ public class RotaReposicao {
         this.empresas = new Empresas();
     }
 
-    @XmlTransient
+    //@XmlTransient
     public int getId() {
         return id;
     }

@@ -7,6 +7,7 @@ package br.com.osprime.DAO;
 import br.com.orasystems.DAO.ConnectionFactory;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.osprime.Modelo.RepositorDespCombustiveis;
+import br.com.osprime.RN.RepositorDespCombustiveisRN;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -24,7 +25,7 @@ public class RepositorDespCombustiveisDAOImp {
 
         try {
 
-            String sql = "insert into repositor_despesas"
+            String sql = "insert into repositor_desp_combustiveis"
                     + " (data, dia_semana, local_partida, local_chegada, km_inicial, "
                     + "  km_final, total_km, media_veiculo, consumo_dia,  preco_combustivel, "
                     + "  subtotal, veiculo, placa, codigo_empresa, codigo_repositor) "
@@ -70,8 +71,9 @@ public class RepositorDespCombustiveisDAOImp {
             conexao.connection.close();
 
         } catch (Exception e) {
-            pp.setCodigo(1010);
-            pp.setMensagem("Problemas ao cadastrar o Cliente de Reposição! " + e.getMessage());
+            pp.setCodigo(1056);
+            pp.setMensagem("Problemas ao cadastrar as despesas com combutíveis do repositor! " + e.getMessage());
+            RepositorDespCombustiveisRN.xMLRepositorDespCombustiveis.getListaErros().getErros().add(pp);
             e.printStackTrace();
         }
         return rdc;

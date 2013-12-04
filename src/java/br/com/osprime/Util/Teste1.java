@@ -5,7 +5,14 @@
 package br.com.osprime.Util;
 
 import br.com.orasystems.RN.ProtocoloProcessosRN;
-import br.com.osprime.RN.RotaReposicaoRN;
+import br.com.orasystems.Utilitarios.OSUtil;
+import br.com.osprime.Modelo.Eventos;
+import br.com.osprime.Modelo.OcorrenciasEvento;
+import br.com.osprime.RN.CargaFullRN;
+import br.com.osprime.XML.XMLCargaFull;
+import java.io.StringWriter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 /**
  *
@@ -17,46 +24,35 @@ public class Teste1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        OcorrenciasEvento oe = new OcorrenciasEvento();
+        Eventos eventos = new Eventos();
         
-        String xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"yes\"?>\n" +
-"<ROTAREPOSICAO>\n" +
-"    <empresas>\n" +
-"        <cnpj>71690382000170</cnpj>\n" +
-"    </empresas>\n" +
-"    <lista>\n" +
-"        <codigo>37</codigo>\n" +
-"        <segunda>N</segunda>\n" +
-"        <terca>N</terca>\n" +
-"        <quarta>N</quarta>\n" +
-"        <quinta>S</quinta>\n" +
-"        <sexta>N</sexta>\n" +
-"        <sabado>N</sabado>\n" +
-"        <domingo>N</domingo>\n" +
-"        <sequencia>0</sequencia>\n" +
-"        <descricao>QUINTA-FEIRA</descricao>\n" +
-"    </lista>\n" +
-"	<lista>\n" +
-"        <codigo>59</codigo>\n" +
-"        <segunda>S</segunda>\n" +
-"        <terca>N</terca>\n" +
-"        <quarta>N</quarta>\n" +
-"        <quinta>N</quinta>\n" +
-"        <sexta>N</sexta>\n" +
-"        <sabado>N</sabado>\n" +
-"        <domingo>N</domingo>\n" +
-"        <sequencia>0</sequencia>\n" +
-"        <descricao></descricao>\n" +
-"    </lista>\n" +
-"</ROTAREPOSICAO>";
-        
-        RotaReposicaoRN rN = new RotaReposicaoRN();
-        String retorno = rN.getProtocoloProcesso(xml);
-        System.out.println("*** Arquivo retorno 1 *** " + retorno);
-        
-        ProtocoloProcessosRN pPRN = new ProtocoloProcessosRN();
-        
-        String fimRetorno = pPRN.retornaXMLSolicitacaoProtocolo(retorno);
-        System.out.println("*** Arquivo retorno 2 *** " + fimRetorno);
-        
+        StringWriter sw = new StringWriter();
+        eventos.setId(20);
+        oe.setEventos(eventos);
+        oe.setLatitude("-1964651");
+        oe.setLongitude("-1964651");
+        oe.setNome_responsavel("LUIS FERNANDO COSTA");
+        oe.setObservacao("dhsa uihduiashd uihasuid hash");
+        oe.setStatus_ocorrencia(1);
+
+        try {
+            //Create JAXB context and instantiate marshaller
+            JAXBContext context = JAXBContext.newInstance(OcorrenciasEvento.class);
+            Marshaller m = context.createMarshaller();
+
+            m.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+            sw = new StringWriter();
+            m.marshal(oe, sw);
+            OSUtil.error(sw.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(sw.toString());
+
     }
 }

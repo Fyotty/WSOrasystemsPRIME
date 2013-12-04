@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author fernando
  */
 @XmlRootElement(name = "ULTIMACOMPRA")
-@XmlType(propOrder = {"codigo_produto", "descricao_produto", "unidade", "quantidade"})
+@XmlType(propOrder = {"id", "codigo_produto", "descricao_produto", "unidade", "quantidade"})
 public class UltimaCompraReposicao {
 
     private transient long id;
@@ -31,7 +31,7 @@ public class UltimaCompraReposicao {
         this.clientesReposicao = new ClientesReposicao();
     }
 
-    @XmlTransient
+    //@XmlTransient
     public long getId() {
         return id;
     }

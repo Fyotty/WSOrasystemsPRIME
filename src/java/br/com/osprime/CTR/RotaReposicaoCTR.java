@@ -7,6 +7,7 @@ package br.com.osprime.CTR;
 import br.com.osprime.DAO.RotaReposicaoDAO;
 import br.com.osprime.DAO.RotaReposicaoDAOImp;
 import br.com.osprime.Modelo.RotaReposicao;
+import br.com.osprime.XML.XMLCargaFull;
 
 /**
  *
@@ -34,6 +35,11 @@ public class RotaReposicaoCTR implements RotaReposicaoDAO{
     @Override
     public RotaReposicao existeRotaReposicao(RotaReposicao rr) {
         return dao.existeRotaReposicao(rr);
+    }
+
+    @Override
+    public XMLCargaFull listaRotaReposicao(XMLCargaFull xMLCargaFull) {
+        return dao.listaRotaReposicao(xMLCargaFull);
     }
     
 }

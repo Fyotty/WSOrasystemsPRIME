@@ -8,6 +8,7 @@ import br.com.orasystems.DAO.ConnectionFactory;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
 import br.com.osprime.Modelo.ClientesRepositor;
+import br.com.osprime.Modelo.RotaReposicao;
 import br.com.osprime.RN.RotaReposicaoRN;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ import java.sql.ResultSet;
  */
 public class ClientesRepositorDAOImp {
 
-    public ClientesRepositor gravaClientesRepositor(ClientesRepositor cr) {
+    public ClientesRepositor gravaClientesRepositor(ClientesRepositor cr, RotaReposicao rr) {
 
         ProtocoloProcessos pp = new ProtocoloProcessos();
         PreparedStatement stmt = null;
@@ -27,9 +28,9 @@ public class ClientesRepositorDAOImp {
         try {
 
             String sql = "insert into clientes_repositor"
-                    + " (codigo_empresa, codigo_repositor, codigo_cliente_reposicao) "
+                    + " (codigo_empresa, codigo_repositor, codigo_cliente_reposicao, codigo_rota_reposicao) "
                     + " values "
-                    + " (?, ?, ?) returning id";
+                    + " (?, ?, ?, ?) returning id";
 
             ConnectionFactory conexao = new ConnectionFactory();
 
@@ -40,6 +41,7 @@ public class ClientesRepositorDAOImp {
             stmt.setInt(i++, cr.getEmpresas().getId());
             stmt.setInt(i++, cr.getRepositores().getId());
             stmt.setInt(i++, cr.getClientesReposicao().getId());
+            stmt.setInt(i++, rr.getId());
 
             System.out.println(stmt);
 
@@ -114,7 +116,7 @@ public class ClientesRepositorDAOImp {
             stmt.setInt(2, cr.getRepositores().getId());
             stmt.setInt(3, cr.getClientesReposicao().getId());
 
-            stmt.executeQuery();
+            stmt.execute();
 
             stmt.close();
             conexao.connection.close();

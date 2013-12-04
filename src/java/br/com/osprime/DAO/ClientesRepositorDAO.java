@@ -5,6 +5,7 @@
 package br.com.osprime.DAO;
 
 import br.com.osprime.Modelo.ClientesRepositor;
+import br.com.osprime.Modelo.RotaReposicao;
 
 /**
  *
@@ -12,7 +13,7 @@ import br.com.osprime.Modelo.ClientesRepositor;
  */
 public interface ClientesRepositorDAO {
     
-    public ClientesRepositor gravaClientesRepositor(ClientesRepositor cr);
+    public ClientesRepositor gravaClientesRepositor(ClientesRepositor cr, RotaReposicao rr);
     
     public ClientesRepositor existeClientesRepositor(ClientesRepositor cr);
     

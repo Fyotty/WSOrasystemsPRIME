@@ -11,7 +11,6 @@ import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
 import br.com.orasystems.XML.XMLProtocoloProcessos;
 import br.com.osprime.CTR.ClientesReposicaoCTR;
-import br.com.osprime.CTR.RotaReposicaoCTR;
 import br.com.osprime.Modelo.ClientesReposicao;
 import static br.com.osprime.RN.RotaReposicaoRN.xMLRotaReposicao;
 import br.com.osprime.XML.XMLClientesReposicao;
@@ -141,28 +140,32 @@ public class ClientesReposicaoRN {
         if (OSUtil.validaString(cr.getRazao_social())) {
             if (cr.getRazao_social().length() > 100) {
                 pp.setCodigo(72);
-                pp.setMensagem("A Razão Social ou o Nome do cliente de reposição não pode ultrapassar 100 caracteres! Corrigir cadastro.");
+                pp.setMensagem("A Razão Social ou o Nome do cliente de reposição não pode ultrapassar 100 caracteres! "
+                        + "Corrigir cadastro, codigo = " + cr.getCodigo());
                 xMLClientesReposicao.getListaErros().getErros().add(pp);
             }
         }
 
         if (!OSUtil.validaString(cr.getNome_fantasia())) {
             pp.setCodigo(73);
-            pp.setMensagem("Não foi informado o Nome Fantasia do cliente de reposição!");
+            pp.setMensagem("Não foi informado o Nome Fantasia do cliente de reposição!"
+                    + "Corrigir cadastro, codigo = " + cr.getCodigo());
             xMLClientesReposicao.getListaErros().getErros().add(pp);
         }
 
         if (OSUtil.validaString(cr.getRazao_social())) {
             if (cr.getRazao_social().length() > 100) {
                 pp.setCodigo(74);
-                pp.setMensagem("O Nome Fantasia ou o Nome do cliente de reposição não pode ultrapassar 100 caracteres! Por favor corrigir cadastro.");
+                pp.setMensagem("O Nome Fantasia ou o Nome do cliente de reposição não pode ultrapassar 100 caracteres! "
+                        + "Corrigir cadastro, codigo = " + cr.getCodigo());
                 xMLClientesReposicao.getListaErros().getErros().add(pp);
             }
         }
 
         if (!OSUtil.validaString(cr.getCnpj())) {
             pp.setCodigo(75);
-            pp.setMensagem("Não foi informado o CNPJ ou CPF do cliente de reposição!");
+            pp.setMensagem("Não foi informado o CNPJ ou CPF do cliente de reposição!"
+                    + "Corrigir cadastro, codigo = " + cr.getCodigo());
             xMLClientesReposicao.getListaErros().getErros().add(pp);
         } else {
             cr.setCnpj(OSUtil.limpaCNPJ(cr.getCnpj()));
@@ -172,7 +175,8 @@ public class ClientesReposicaoRN {
             if (cr.getCnpj().length() >= 14) {
                 if (!OSUtil.isCNPJ(cr.getCnpj())) {
                     pp.setCodigo(76);
-                    pp.setMensagem("Problemas ao validar o CNPJ do cliente de reposição!");
+                    pp.setMensagem("Problemas ao validar o CNPJ do cliente de reposição!"
+                            + "Corrigir cadastro, codigo = " + cr.getCodigo());
                     xMLClientesReposicao.getListaErros().getErros().add(pp);
                 }
             }
@@ -180,11 +184,12 @@ public class ClientesReposicaoRN {
 
         if (!OSUtil.validaString(cr.getIestad())) {
             pp.setCodigo(77);
-            pp.setMensagem("Não foi informada a I.E. ou R.G. do cliente de reposição!");
+            pp.setMensagem("Não foi informada a I.E. ou R.G. do cliente de reposição!"
+                    + "Corrigir cadastro, codigo = " + cr.getCodigo());
             xMLClientesReposicao.getListaErros().getErros().add(pp);
         }
 
-        if (cr.getRr().getCodigo() == 0) {
+        /*if (cr.getRr().getCodigo() == 0) {
             pp.setCodigo(78);
             pp.setMensagem("Não foi informada a rota de reposição do cliente de reposição! Caso não houver informe uma padrão.");
             xMLClientesReposicao.getListaErros().getErros().add(pp);
@@ -199,7 +204,7 @@ public class ClientesReposicaoRN {
                 pp.setMensagem("Rota de Reposição não existe!");
                 xMLClientesReposicao.getListaErros().getErros().add(pp);
             }
-        }
+        }*/
     }
 
     public void validaEmpresaRepositor(XMLClientesReposicao xMLClientesReposicao) {

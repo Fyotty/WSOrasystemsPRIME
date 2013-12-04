@@ -9,8 +9,10 @@ import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
 import br.com.osprime.Modelo.RotaReposicao;
 import br.com.osprime.RN.RotaReposicaoRN;
+import br.com.osprime.XML.XMLCargaFull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
@@ -41,7 +43,7 @@ public class RotaReposicaoDAOImp {
                 stmt.setInt(1, rr.getEmpresas().getId());
                 stmt.setInt(2, rr.getCodigo());
             }
-            
+
             System.out.println(stmt);
             rs = stmt.executeQuery();
 
@@ -209,5 +211,57 @@ public class RotaReposicaoDAOImp {
             e.printStackTrace();
         }
         return rr;
+    }
+
+    public XMLCargaFull listaRotaReposicao(XMLCargaFull xMLCargaFull) {
+
+        String sql = null;
+        ResultSet rs = null;
+        PreparedStatement stmt = null;
+
+        try {
+            ConnectionFactory conexao = new ConnectionFactory();
+
+            sql = "select * "
+                    + "  from rota_reposicao "
+                    + " where id in (select codigo_rota_reposicao "
+                    + "                from clientes_repositor "
+                    + "               where codigo_repositor = ?)";
+
+            stmt = conexao.connection.prepareStatement(sql);
+            
+            stmt.setInt(1, xMLCargaFull.getRepositores().getId());
+            
+            System.out.println(stmt);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                RotaReposicao rr = new RotaReposicao();
+                
+                rr.setId(rs.getInt("id"));
+                rr.setSegunda(rs.getString("segunda"));
+                rr.setTerca(rs.getString("terca"));
+                rr.setQuarta(rs.getString("quarta"));
+                rr.setQuinta(rs.getString("quinta"));
+                rr.setSexta(rs.getString("sexta"));
+                rr.setSabado(rs.getString("sabado"));
+                rr.setDomingo(rs.getString("domingo"));
+                rr.setSequencia(rs.getInt("sequencia"));
+                rr.setDescricao(rs.getString("descricao"));
+                rr.setCodigo(rs.getInt("codigo"));
+                
+                xMLCargaFull.getListaRotaReposicao().add(rr);
+            }
+
+            rs.close();
+            stmt.close();
+            conexao.connection.close();
+
+        } catch (Exception e) {
+            OSUtil.error(e.getMessage());
+            OSUtil.error(e.getCause().getMessage());
+            e.printStackTrace();
+        }
+        return xMLCargaFull;
     }
 }

@@ -6,9 +6,12 @@ package br.com.osprime.Modelo;
 
 import br.com.orasystems.Modelo.Empresas;
 import br.com.orasystems.Modelo.Repositores;
+import br.com.orasystems.Utilitarios.DateAdapter;
 import java.sql.Date;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
@@ -54,6 +57,8 @@ public class RepositorDespCombustiveis {
         return data;
     }
 
+    @XmlElement(name = "data", required = true)
+    @XmlJavaTypeAdapter(DateAdapter.class)
     public void setData(Date data) {
         this.data = data;
     }

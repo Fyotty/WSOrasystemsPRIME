@@ -105,6 +105,7 @@ public class UltimaCompraReposicaoRN {
             pp.setMensagem("Arquivo XML inválido ou não está de acordo com o processo realizado!: " + e.getMessage());
             xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
             OSUtil.error(e.getMessage());
+            e.printStackTrace();
         }
 
         try {
@@ -136,14 +137,15 @@ public class UltimaCompraReposicaoRN {
 
         if (ucr.getCodigo_produto() <= 0) {
             pp.setCodigo(75);
-            pp.setMensagem("Não foi informado o código do produto " + ucr.getDescricao_produto());
+            pp.setMensagem("Não foi informado o código do produto! " + ucr.getDescricao_produto());
             xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
         }
 
         if (!OSUtil.validaString(ucr.getDescricao_produto())) {
             pp = new ProtocoloProcessos();
             pp.setCodigo(75);
-            pp.setMensagem("Não foi informado a descrição do produto " + ucr.getCodigo_produto());
+            pp.setMensagem("Não foi informado a descrição do produto. "
+                    + "Corrigir cadastro, codigo = " + ucr.getCodigo_produto());
             xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
         }
 
@@ -151,7 +153,8 @@ public class UltimaCompraReposicaoRN {
             if (ucr.getDescricao_produto().length() > 100) {
                 pp = new ProtocoloProcessos();
                 pp.setCodigo(76);
-                pp.setMensagem("A descrição do produto ultrapassa a quantidade limite de 100 caracteres!");
+                pp.setMensagem("A descrição do produto ultrapassa a quantidade limite de 100 caracteres!"
+                        + "Corrigir cadastro, codigo = " + ucr.getCodigo_produto());
                 xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
             }
         }
@@ -159,7 +162,8 @@ public class UltimaCompraReposicaoRN {
         if (!OSUtil.validaString(ucr.getUnidade())) {
             pp = new ProtocoloProcessos();
             pp.setCodigo(75);
-            pp.setMensagem("Não foi informado a unidade do produto!");
+            pp.setMensagem("Não foi informado a unidade do produto!"
+                    + "Corrigir cadastro, codigo = " + ucr.getCodigo_produto());
             xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
         }
 
@@ -167,7 +171,8 @@ public class UltimaCompraReposicaoRN {
             if (ucr.getUnidade().length() > 4) {
                 pp = new ProtocoloProcessos();
                 pp.setCodigo(76);
-                pp.setMensagem("A unidade do produto ultrapassa a quantidade limite de 4 caracteres!");
+                pp.setMensagem("A unidade do produto ultrapassa a quantidade limite de 4 caracteres!"
+                        + "Corrigir cadastro, codigo = " + ucr.getCodigo_produto());
                 xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
             }
         }
@@ -175,7 +180,8 @@ public class UltimaCompraReposicaoRN {
         if (ucr.getQuantidade() <= 0) {
             pp = new ProtocoloProcessos();
             pp.setCodigo(76);
-            pp.setMensagem("A quantidade não pode ser menor ou igual a zero!");
+            pp.setMensagem("A quantidade não pode ser menor ou igual a zero!"
+                    + "Corrigir cadastro, codigo = " + ucr.getCodigo_produto());
             xMLUltimaCompraReposicao.getListaErros().getErros().add(pp);
         }
     }

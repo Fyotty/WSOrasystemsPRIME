@@ -22,47 +22,49 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * @author fernando
  */
 @XmlRootElement(name = "CLIENTES")
-@XmlType(propOrder = {"codigo", "razao_social", "nome_fantasia", "cnpj",
+@XmlType(propOrder = {"id", "codigo", "razao_social", "nome_fantasia", "cnpj",
     "iestad", "contato", "telefone", "endereco", "bairro",
     "cidade", "cep", "estado", "observacao", "email", "dt_ultima_compra",
-    "rr", "listaRepositores", "listaUltimaCompraReposicao"})
+    "listaUltimaCompraReposicao", "listaRepositores", "listaEventos"})
 public class ClientesReposicao {
 
     private int id;
     @SerializedName("razaoSocial")
-    private String razao_social;
+    private String razao_social; //ok
     @SerializedName("nomeFantasia")
-    private String nome_fantasia;
-    private String cnpj;
-    private String iestad;
+    private String nome_fantasia; //ok
+    private String cnpj; //ok
+    private String iestad; //ok
     @SerializedName("ultimaCompra")
-    private Date dt_ultima_compra;
-    private String contato;
-    private String telefone;
-    private String endereco;
-    private String bairro;
-    private String cidade;
-    private String cep;
+    private Date dt_ultima_compra; //ok
+    private String contato; //ok
+    private String telefone; //ok
+    private String endereco; //ok
+    private String bairro; //ok
+    private String cidade; //ok
+    private String cep; //ok
     @SerializedName("uf")
-    private String estado;
-    private String email;
+    private String estado; //ok
+    private String email; //ok
     @SerializedName("obs")
-    private String observacao;
+    private String observacao; //ok
     private transient Empresas empresas;
-    private int codigo;
-    @SerializedName("rota")
-    private RotaReposicao rr;
-    private transient List<ClientesRepositor> listaRepositores;
+    private int codigo; //ok
+    //@SerializedName("rota")
+    //private RotaReposicao rr;
+    private transient List<ClientesRepositor> listaRepositores; //ok
     private List<UltimaCompraReposicao> listaUltimaCompraReposicao;
+    private List<Eventos> listaEventos;
 
     public ClientesReposicao() {
         this.empresas = new Empresas();
-        this.rr = new RotaReposicao();
+        //this.rr = new RotaReposicao();
         this.listaRepositores = new ArrayList<>();
         this.listaUltimaCompraReposicao = new ArrayList<>();
+        this.listaEventos = new ArrayList<>();
     }
 
-    @XmlTransient
+    //@XmlTransient
     public int getId() {
         return id;
     }
@@ -194,14 +196,7 @@ public class ClientesReposicao {
         this.codigo = codigo;
     }
 
-    public RotaReposicao getRr() {
-        return rr;
-    }
-
-    public void setRr(RotaReposicao rr) {
-        this.rr = rr;
-    }
-
+    @XmlElement(name = "rota_reposicao", required = true)
     public List<ClientesRepositor> getListaRepositores() {
         return listaRepositores;
     }
@@ -210,6 +205,7 @@ public class ClientesReposicao {
         this.listaRepositores = listaRepositores;
     }
 
+    //@XmlTransient
     public List<UltimaCompraReposicao> getListaUltimaCompraReposicao() {
         return listaUltimaCompraReposicao;
     }
@@ -226,29 +222,37 @@ public class ClientesReposicao {
         this.email = email;
     }
 
+    public List<Eventos> getListaEventos() {
+        return listaEventos;
+    }
+
+    public void setListaEventos(List<Eventos> listaEventos) {
+        this.listaEventos = listaEventos;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + this.id;
-        hash = 59 * hash + Objects.hashCode(this.razao_social);
-        hash = 59 * hash + Objects.hashCode(this.nome_fantasia);
-        hash = 59 * hash + Objects.hashCode(this.cnpj);
-        hash = 59 * hash + Objects.hashCode(this.iestad);
-        hash = 59 * hash + Objects.hashCode(this.dt_ultima_compra);
-        hash = 59 * hash + Objects.hashCode(this.contato);
-        hash = 59 * hash + Objects.hashCode(this.telefone);
-        hash = 59 * hash + Objects.hashCode(this.endereco);
-        hash = 59 * hash + Objects.hashCode(this.bairro);
-        hash = 59 * hash + Objects.hashCode(this.cidade);
-        hash = 59 * hash + Objects.hashCode(this.cep);
-        hash = 59 * hash + Objects.hashCode(this.estado);
-        hash = 59 * hash + Objects.hashCode(this.email);
-        hash = 59 * hash + Objects.hashCode(this.observacao);
-        hash = 59 * hash + Objects.hashCode(this.empresas);
-        hash = 59 * hash + this.codigo;
-        hash = 59 * hash + Objects.hashCode(this.rr);
-        hash = 59 * hash + Objects.hashCode(this.listaRepositores);
-        hash = 59 * hash + Objects.hashCode(this.listaUltimaCompraReposicao);
+        hash = 83 * hash + this.id;
+        hash = 83 * hash + Objects.hashCode(this.razao_social);
+        hash = 83 * hash + Objects.hashCode(this.nome_fantasia);
+        hash = 83 * hash + Objects.hashCode(this.cnpj);
+        hash = 83 * hash + Objects.hashCode(this.iestad);
+        hash = 83 * hash + Objects.hashCode(this.dt_ultima_compra);
+        hash = 83 * hash + Objects.hashCode(this.contato);
+        hash = 83 * hash + Objects.hashCode(this.telefone);
+        hash = 83 * hash + Objects.hashCode(this.endereco);
+        hash = 83 * hash + Objects.hashCode(this.bairro);
+        hash = 83 * hash + Objects.hashCode(this.cidade);
+        hash = 83 * hash + Objects.hashCode(this.cep);
+        hash = 83 * hash + Objects.hashCode(this.estado);
+        hash = 83 * hash + Objects.hashCode(this.email);
+        hash = 83 * hash + Objects.hashCode(this.observacao);
+        hash = 83 * hash + Objects.hashCode(this.empresas);
+        hash = 83 * hash + this.codigo;
+        hash = 83 * hash + Objects.hashCode(this.listaRepositores);
+        hash = 83 * hash + Objects.hashCode(this.listaUltimaCompraReposicao);
+        hash = 83 * hash + Objects.hashCode(this.listaEventos);
         return hash;
     }
 
@@ -312,10 +316,13 @@ public class ClientesReposicao {
         if (this.codigo != other.codigo) {
             return false;
         }
-        if (!Objects.equals(this.rr, other.rr)) {
+        if (!Objects.equals(this.listaRepositores, other.listaRepositores)) {
             return false;
         }
-        if (!Objects.equals(this.listaRepositores, other.listaRepositores)) {
+        if (!Objects.equals(this.listaUltimaCompraReposicao, other.listaUltimaCompraReposicao)) {
+            return false;
+        }
+        if (!Objects.equals(this.listaEventos, other.listaEventos)) {
             return false;
         }
         return true;

@@ -9,11 +9,17 @@ import br.com.orasystems.DAO.ConnectionFactory;
 import br.com.orasystems.Modelo.ProtocoloProcessos;
 import br.com.orasystems.Utilitarios.OSUtil;
 import br.com.osprime.CTR.ClientesRepositorCTR;
+import br.com.osprime.CTR.EventosCTR;
+import br.com.osprime.CTR.RotaReposicaoCTR;
+import br.com.osprime.CTR.UltimaCompraReposicaoCTR;
 import br.com.osprime.Modelo.ClientesReposicao;
 import br.com.osprime.Modelo.ClientesRepositor;
+import br.com.osprime.Modelo.RotaReposicao;
 import br.com.osprime.RN.ClientesReposicaoRN;
+import br.com.osprime.XML.XMLCargaFull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
@@ -54,6 +60,7 @@ public class ClientesReposicaoDAOImp {
                 cr.setCep(rs.getString("cep"));
                 cr.setEstado(rs.getString("estado"));
                 cr.setObservacao(rs.getString("observacao"));
+                cr.setEmail(rs.getString("email"));
             }
 
             rs.close();
@@ -79,8 +86,8 @@ public class ClientesReposicaoDAOImp {
             String sql = "insert into clientes_reposicao"
                     + " (razao_social, nome_fantasia, cnpj, iestad, dt_ultima_compra, "
                     + "  contato, telefone, endereco, bairro, cidade, "
-                    + "  cep, estado, observacao, codigo_empresa, codigo, "
-                    + " codigo_rota_reposicao) "
+                    + "  cep, estado, observacao, codigo_empresa, codigo,"
+                    + "  email) "
                     + " values "
                     + " (?, ?, ?, ?, ?, "
                     + "  ?, ?, ?, ?, ?, "
@@ -112,9 +119,9 @@ public class ClientesReposicaoDAOImp {
             stmt.setString(i++, cr.getObservacao());
             stmt.setInt(i++, cr.getEmpresas().getId());
             stmt.setInt(i++, cr.getCodigo());
-
-            //codigo_rota_reposicao
-            stmt.setInt(i++, cr.getRr().getId());
+            
+            //email
+            stmt.setString(i++, cr.getEmail());
 
             System.out.println(stmt);
 
@@ -135,19 +142,23 @@ public class ClientesReposicaoDAOImp {
                 if (ClientesReposicaoRN.xMLClientesReposicao.getListaErros().getErros().isEmpty()) {
                     ClientesRepositorCTR clientesRepositorCTR = new ClientesRepositorCTR();
 
-                    switch (clientesRepositor.getOperacao()) {
-                        case "I": {
-                            clientesRepositor = clientesRepositorCTR.existeClientesRepositor(clientesRepositor);
-                            if (clientesRepositor.getId() <= 0) {
-                                clientesRepositor = clientesRepositorCTR.gravaClientesRepositor(clientesRepositor);
-                            }
+                    clientesRepositor = clientesRepositorCTR.existeClientesRepositor(clientesRepositor);
+                    if (clientesRepositor.getId() <= 0) {
+                        clientesRepositorCTR.excluiClientesRepositor(clientesRepositor);
+
+                        //Grava os repositores desse cliente
+                        for (RotaReposicao rr : clientesRepositor.getListaRotaReposicao()) {
+                            RotaReposicaoCTR rotaReposicaoCTR = new RotaReposicaoCTR();
+                            rr.setEmpresas(clientesRepositor.getEmpresas());
+                            rr = rotaReposicaoCTR.existeRotaReposicao(rr);
+
+                            if (rr.getId() > 0) {
+                                clientesRepositor = clientesRepositorCTR.gravaClientesRepositor(clientesRepositor, rr);
+                            }//validar com mensagem
                         }
-                        break;
-                        case "D": {
-                            clientesRepositorCTR.excluiClientesRepositor(clientesRepositor);
-                        }
-                        break;
-                    }
+
+                    }//validar com mensagem
+
                 }
             }
 
@@ -170,8 +181,8 @@ public class ClientesReposicaoDAOImp {
             String sql = "update clientes_reposicao set "
                     + " razao_social = ?, nome_fantasia = ?, cnpj = ?, iestad = ?, dt_ultima_compra = ?, "
                     + "  contato = ?, telefone = ?, endereco = ?, bairro = ?, cidade = ?, "
-                    + "  cep = ?, estado = ?, observacao = ?,  "
-                    + " codigo_rota_reposicao = ? "
+                    + "  cep = ?, estado = ?, observacao = ?, "
+                    + "  email = ? "
                     + " where id = ? ";
 
             ConnectionFactory conexao = new ConnectionFactory();
@@ -197,9 +208,9 @@ public class ClientesReposicaoDAOImp {
             stmt.setString(i++, cr.getCep());
             stmt.setString(i++, cr.getEstado());
             stmt.setString(i++, cr.getObservacao());
-
-            //codigo_rota_reposicao
-            stmt.setInt(i++, cr.getRr().getId());
+            
+            //email
+            stmt.setString(i++, cr.getEmail());
 
             //filtro
             stmt.setInt(i++, cr.getId());
@@ -220,19 +231,23 @@ public class ClientesReposicaoDAOImp {
                 if (ClientesReposicaoRN.xMLClientesReposicao.getListaErros().getErros().isEmpty()) {
                     ClientesRepositorCTR clientesRepositorCTR = new ClientesRepositorCTR();
 
-                    switch (clientesRepositor.getOperacao()) {
-                        case "I": {
-                            clientesRepositor = clientesRepositorCTR.existeClientesRepositor(clientesRepositor);
-                            if (clientesRepositor.getId() <= 0) {
-                                clientesRepositor = clientesRepositorCTR.gravaClientesRepositor(clientesRepositor);
-                            }
+                    clientesRepositor = clientesRepositorCTR.existeClientesRepositor(clientesRepositor);
+                    if (clientesRepositor.getId() <= 0) {
+                        clientesRepositorCTR.excluiClientesRepositor(clientesRepositor);
+
+                        //Grava os repositores desse cliente
+                        for (RotaReposicao rr : clientesRepositor.getListaRotaReposicao()) {
+                            RotaReposicaoCTR rotaReposicaoCTR = new RotaReposicaoCTR();
+                            rr.setEmpresas(clientesRepositor.getEmpresas());
+                            rr = rotaReposicaoCTR.existeRotaReposicao(rr);
+
+                            if (rr.getId() > 0) {
+                                clientesRepositor = clientesRepositorCTR.gravaClientesRepositor(clientesRepositor, rr);
+                            }//validar com mensagem
                         }
-                        break;
-                        case "D": {
-                            clientesRepositorCTR.excluiClientesRepositor(clientesRepositor);
-                        }
-                        break;
-                    }
+
+                    }//validar com mensagem
+
                 }
             }
 
@@ -299,5 +314,68 @@ public class ClientesReposicaoDAOImp {
             }
         }
 
+    }
+
+    public XMLCargaFull listaClientesReposicao(XMLCargaFull xMLCargaFull) {
+
+        String sql = null;
+        ResultSet rs = null;
+        PreparedStatement stmt = null;
+
+        try {
+            ConnectionFactory conexao = new ConnectionFactory();
+
+            sql = "select * "
+                    + "  from v_clientes_reposicao  "
+                    + " where codigo_empresa = ?"
+                    + "   and codigo_repositor = ?";
+
+            stmt = conexao.connection.prepareStatement(sql);
+            stmt.setInt(1, xMLCargaFull.getEmpresas().getId());
+            stmt.setInt(2, xMLCargaFull.getRepositores().getId());
+
+            System.out.println(stmt);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                
+                ClientesReposicao cr = new ClientesReposicao();
+                
+                cr.setId(rs.getInt("id"));
+                cr.setCodigo(rs.getInt("codigo"));
+                cr.setRazao_social(rs.getString("razao_social"));
+                cr.setNome_fantasia(rs.getString("nome_fantasia"));
+                cr.setCnpj(rs.getString("cnpj"));
+                cr.setIestad(rs.getString("iestad"));
+                cr.setDt_ultima_compra(rs.getDate("dt_ultima_compra"));
+                cr.setContato(rs.getString("contato"));
+                cr.setTelefone(rs.getString("telefone"));
+                cr.setEndereco(rs.getString("endereco"));
+                cr.setBairro(rs.getString("bairro"));
+                cr.setCidade(rs.getString("cidade"));
+                cr.setCep(rs.getString("cep"));
+                cr.setEstado(rs.getString("estado"));
+                cr.setObservacao(rs.getString("observacao"));
+                cr.setEmail(rs.getString("email"));
+                
+                UltimaCompraReposicaoCTR ultimaCompraReposicaoCTR = new UltimaCompraReposicaoCTR();
+                cr.getListaUltimaCompraReposicao().addAll(ultimaCompraReposicaoCTR.listaUltimaCompraReposicao(cr));
+                
+                EventosCTR eventosCTR = new EventosCTR();
+                cr.getListaEventos().addAll(eventosCTR.listaEventos(cr));
+                
+                xMLCargaFull.getListaClientesReposicao().add(cr);
+            }
+
+            rs.close();
+            stmt.close();
+            conexao.connection.close();
+
+        } catch (Exception e) {
+            OSUtil.error(e.getMessage());
+            OSUtil.error(e.getCause().getMessage());
+            e.printStackTrace();
+        }
+        return xMLCargaFull;
     }
 }
